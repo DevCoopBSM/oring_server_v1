@@ -1,0 +1,35 @@
+package bsm.devcoop.oring.domain.vote;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Entity
+@Table
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Conference {
+    @Id
+    private int date; // 회의 날짜 PK
+
+    private String pdfLink; // PDF 링크
+
+    @OneToMany(mappedBy = "conference",
+            cascade = CascadeType.ALL, orphanRemoval = true /** User가 삭제되면 Dream 객체도 삭제*/)
+    private List<Agenda> agenda;
+
+    @OneToMany(mappedBy = "conference", cascade = CascadeType.ALL, orphanRemoval = true /** User가 삭제되면 Dream 객체도 삭제*/)
+    private List<Vote> vote;
+
+    @Builder
+    public Conference(int date, String pdfLink, List<Agenda> agenda, List<Vote> vote) {
+        this.date = date;
+        this.pdfLink = pdfLink;
+        this.agenda = agenda;
+        this.vote = vote;
+    }
+}
