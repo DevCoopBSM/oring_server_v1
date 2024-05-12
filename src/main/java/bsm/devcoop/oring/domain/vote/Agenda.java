@@ -14,26 +14,30 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Agenda {
-    // agendaNo 랑 conference(pk) 한 번에 묶어야 함
+  // agendaNo 랑 conference(pk) 한 번에 묶어야 함
 
-    @Id
-    private int agendaNo; // 안건 번호 PK
+  @EmbeddedId
+  @Column(name = "agenda_id")
+  private VoteId id;
 
-    @ManyToOne(optional = false)
-    private Conference conference; // 회의 날짜 PK FK
+  private String agendaContent; // 안건 내용
 
-    private String agendaContent; // 안건 내용
+  @OneToMany(
+    mappedBy = "agenda",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private List<Vote> vote;
 
-    @OneToMany(mappedBy = "agenda",
-            cascade = CascadeType.ALL, orphanRemoval = true /** User가 삭제되면 Dream 객체도 삭제*/)
-    private List<Vote> vote;
+  public void addVote(Vote vote) {
+    vote.setAgenda(this);
+    this.vote.add(vote);
+  }
 
-    @Builder
-    public Agenda(int agendaNo, Conference conference,
-                  String agendaContent, List<Vote> vote) {
-        this.agendaNo = agendaNo;
-        this.conference = conference;
-        this.agendaContent = agendaContent;
-        this.vote = vote;
-    }
+  @Builder
+  public Agenda(VoteId id, String agendaContent, List<Vote> vote) {
+    this.id = id;
+    this.agendaContent = agendaContent;
+    this.vote = vote;
+  }
 }
