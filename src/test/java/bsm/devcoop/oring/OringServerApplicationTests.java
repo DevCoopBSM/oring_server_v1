@@ -1,4 +1,4 @@
-package bsm.devcoop.oring_server;
+package bsm.devcoop.oring;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

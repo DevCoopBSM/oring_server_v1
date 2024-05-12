@@ -1,4 +1,4 @@
-package bsm.devcoop.oring_server;
+package bsm.devcoop.oring;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
