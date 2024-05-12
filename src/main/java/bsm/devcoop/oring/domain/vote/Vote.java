@@ -1,6 +1,6 @@
 package bsm.devcoop.oring.domain.vote;
 
-import bsm.devcoop.oring.global.exception.enums.VoteCode;
+import bsm.devcoop.oring.domain.vote.types.VoteCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,28 +12,36 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote {
-    @Id
-    private String stuNumber; // 학번
+  @Id
+  private String stuNumber; // 학번
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agenda_no")
-    private Agenda agenda;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "agenda_no")
+  private Agenda agenda;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "date")
-    private Conference conference;
+  public void setAgenda(Agenda agenda) {
+    this.agenda = agenda;
+  }
 
-    @Enumerated(EnumType.STRING)
-    private VoteCode vote; // 찬성 or 반대
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "date")
+  private Conference conference;
 
-    private String reason; // 반대 이유
+  public void setConference(Conference conference) {
+    this.conference = conference;
+  }
 
-    @Builder
-    public Vote(String stuNumber, Agenda agenda, Conference conference, VoteCode vote, String reason) {
-        this.stuNumber = stuNumber;
-        this.agenda = agenda;
-        this.conference = conference;
-        this.vote = vote;
-        this.reason = reason;
-    }
+  @Enumerated(EnumType.STRING)
+  private VoteCode vote; // 찬성 or 반대
+
+  private String reason; // 반대 이유
+
+  @Builder
+  public Vote(String stuNumber, Agenda agenda, Conference conference, VoteCode vote, String reason) {
+    this.stuNumber = stuNumber;
+    this.agenda = agenda;
+    this.conference = conference;
+    this.vote = vote;
+    this.reason = reason;
+  }
 }
