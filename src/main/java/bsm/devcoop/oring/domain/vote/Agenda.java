@@ -14,30 +14,36 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Agenda {
-  // agendaNo 랑 conference(pk) 한 번에 묶어야 함
-
+  // agendaNo & date(conference)(pk) 한 번에 묶어야 함
   @EmbeddedId
-  @Column(name = "agenda_id")
-  private VoteId id;
+  private AgendaId id;
 
   private String agendaContent; // 안건 내용
 
+  @ManyToOne
+  @MapsId("conferenceId")
+  @JoinColumn(name = "conference_date")
+  private Conference conference;
+
+  public void setConference(Conference conference) {
+    this.conference = conference;
+  }
+
   @OneToMany(
-    mappedBy = "agenda",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true
+          mappedBy = "agenda",
+          cascade = CascadeType.ALL,
+          orphanRemoval = true
   )
-  private List<Vote> vote;
+  private List<Vote> votes = new ArrayList<>();
 
   public void addVote(Vote vote) {
     vote.setAgenda(this);
-    this.vote.add(vote);
+    votes.add(vote);
   }
 
   @Builder
-  public Agenda(VoteId id, String agendaContent, List<Vote> vote) {
+  public Agenda(AgendaId id, String agendaContent) {
     this.id = id;
     this.agendaContent = agendaContent;
-    this.vote = vote;
   }
 }

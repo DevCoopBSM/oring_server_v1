@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,40 +16,27 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Conference {
   @Id
-  @Column(name = "date")
-  private int date; // 회의 날짜 PK
+  private LocalDate date; // 회의 날짜 PK
+
 
   private String pdfLink; // PDF 링크
 
   @OneToMany(
-    mappedBy = "id",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true
+          mappedBy = "conference",
+          cascade = CascadeType.ALL,
+          orphanRemoval = true
   )
-  private List<Agenda> agenda;
+  private List<Agenda> agendas = new ArrayList<>(); // 연관관계 맵핑 - 안건
 
+  // add()
   public void addAgenda(Agenda agenda) {
-    agenda.getId().setConference(this);
-    this.agenda.add(agenda);
-  }
-
-  @OneToMany(
-    mappedBy = "conference",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true
-  )
-  private List<Vote> vote;
-
-  public void addVote(Vote vote) {
-    vote.setConference(this);
-    this.vote.add(vote);
+    agenda.setConference(this);
+    agendas.add(agenda);
   }
 
   @Builder
-  public Conference(int date, String pdfLink, List<Agenda> agenda, List<Vote> vote) {
+  public Conference(LocalDate date, String pdfLink) {
     this.date = date;
     this.pdfLink = pdfLink;
-    this.agenda = agenda;
-    this.vote = vote;
   }
 }
