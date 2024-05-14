@@ -1,6 +1,6 @@
 package bsm.devcoop.oring.domain.vote;
 
-import bsm.devcoop.oring.global.exception.enums.VoteCode;
+import bsm.devcoop.oring.domain.vote.types.VoteCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,28 +12,40 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote {
-    @Id
-    private String stuNumber; // 학번
+  // agendaId(agendaId) & stuNumber(student) 묶음
+  @EmbeddedId
+  private VoteId voteId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agenda_no")
-    private Agenda agenda;
+  @Enumerated(EnumType.STRING)
+  private VoteCode vote; // 찬성 or 반대
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "date")
-    private Conference conference;
+  private String reason; // 반대 이유
 
-    @Enumerated(EnumType.STRING)
-    private VoteCode vote; // 찬성 or 반대
+  @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("agendaId")
+  @JoinColumns({
+          @JoinColumn(name = "agenda_no"),
+          @JoinColumn(name = "conference_date")
+  })
+  private Agenda agenda;
 
-    private String reason; // 반대 이유
+  public void setAgenda(Agenda agenda) {
+    this.agenda = agenda;
+  }
 
-    @Builder
-    public Vote(String stuNumber, Agenda agenda, Conference conference, VoteCode vote, String reason) {
-        this.stuNumber = stuNumber;
-        this.agenda = agenda;
-        this.conference = conference;
-        this.vote = vote;
-        this.reason = reason;
-    }
+  @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("studentId")
+  @JoinColumn(name = "stu_number")
+  private Student student;
+
+  public void setStudent(Student student) {
+    this.student = student;
+  }
+
+  @Builder
+  public Vote(VoteId voteId, VoteCode vote, String reason) {
+    this.voteId = voteId;
+    this.vote = vote;
+    this.reason = reason;
+  }
 }

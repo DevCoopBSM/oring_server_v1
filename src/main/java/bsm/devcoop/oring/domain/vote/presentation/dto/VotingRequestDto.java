@@ -12,7 +12,7 @@ public class VotingRequestDto {
 //    @NotNull
 //    private int date;
 //    private int agendaNo;
-    private String stuNumber;
+    private char stuNumber;
 //    private char vote;
 //    private String reason;
 }
