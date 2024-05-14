@@ -1,5 +1,7 @@
 package bsm.devcoop.oring.domain.vote;
 
+import bsm.devcoop.oring.domain.agenda.Agenda;
+import bsm.devcoop.oring.domain.user.User;
 import bsm.devcoop.oring.domain.vote.types.VoteCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -25,8 +27,8 @@ public class Vote {
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("agendaId")
   @JoinColumns({
-          @JoinColumn(name = "agenda_no"),
-          @JoinColumn(name = "conference_date")
+    @JoinColumn(name = "agenda_no"),
+    @JoinColumn(name = "conference_date")
   })
 
   private Agenda agenda;
@@ -38,10 +40,10 @@ public class Vote {
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("studentId")
   @JoinColumn(name = "stu_number")
-  private Student student;
+  private User user;
 
-  public void setStudent(Student student) {
-    this.student = student;
+  public void setUser(User user) {
+    this.user = user;
   }
 
   @Builder
