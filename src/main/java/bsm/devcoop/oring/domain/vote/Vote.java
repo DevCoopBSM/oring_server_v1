@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote {
+
   // agendaId(agendaId) & stuNumber(student) 묶음
   @EmbeddedId
   private VoteId voteId;
@@ -27,6 +28,7 @@ public class Vote {
           @JoinColumn(name = "agenda_no"),
           @JoinColumn(name = "conference_date")
   })
+
   private Agenda agenda;
 
   public void setAgenda(Agenda agenda) {
@@ -49,3 +51,4 @@ public class Vote {
     this.reason = reason;
   }
 }
+

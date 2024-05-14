@@ -18,6 +18,7 @@ public class Conference {
   @Id
   private LocalDate date; // 회의 날짜 PK
 
+
   private String pdfLink; // PDF 링크
 
   @OneToMany(
