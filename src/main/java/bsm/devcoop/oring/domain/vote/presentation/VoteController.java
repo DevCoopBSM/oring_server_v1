@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class VoteController {
-    private final VoteService voteService;
+  private final VoteService voteService;
 
-    // 투표하기 ( 현재 학번만 return )
-    @PostMapping("/voting")
-    public ResponseEntity<?> vote(@RequestBody VotingRequestDto dto) {
-        return ResponseEntity.ok(voteService.vote(dto));
-    }
+  // 투표하기 ( 현재 학번만 return )
+  @PostMapping("/voting")
+  public ResponseEntity<?> vote(@RequestBody VotingRequestDto dto) {
+    return ResponseEntity.ok(voteService.vote(dto));
+  }
 }

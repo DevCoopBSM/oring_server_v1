@@ -13,24 +13,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        request -> request
-                                .anyRequest().permitAll()
-                                //.requestMatchers("/api/vote/voting").permitAll()
-                )
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                );
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+      .cors(AbstractHttpConfigurer::disable)
+      .csrf(AbstractHttpConfigurer::disable)
+      .formLogin(AbstractHttpConfigurer::disable)
+      .httpBasic(AbstractHttpConfigurer::disable)
+      .authorizeHttpRequests(
+        request -> request
+          .anyRequest().permitAll()
+        //.requestMatchers("/api/vote/voting").permitAll()
+      )
+      .sessionManagement(
+        session -> session.sessionCreationPolicy(
+          SessionCreationPolicy.STATELESS
+        )
+      );
 
-        return http.build();
-    }
+    return http.build();
+  }
 }

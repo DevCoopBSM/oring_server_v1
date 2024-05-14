@@ -1,5 +1,7 @@
-package bsm.devcoop.oring.domain.vote;
+package bsm.devcoop.oring.domain.agenda;
 
+import bsm.devcoop.oring.domain.conference.Conference;
+import bsm.devcoop.oring.domain.vote.Vote;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,9 +32,9 @@ public class Agenda {
   }
 
   @OneToMany(
-          mappedBy = "agenda",
-          cascade = CascadeType.ALL,
-          orphanRemoval = true
+    mappedBy = "agenda",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
   )
   private List<Vote> votes = new ArrayList<>();
 

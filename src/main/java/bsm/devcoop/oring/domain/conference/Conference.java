@@ -1,5 +1,6 @@
-package bsm.devcoop.oring.domain.vote;
+package bsm.devcoop.oring.domain.conference;
 
+import bsm.devcoop.oring.domain.agenda.Agenda;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,9 +23,9 @@ public class Conference {
   private String pdfLink; // PDF 링크
 
   @OneToMany(
-          mappedBy = "conference",
-          cascade = CascadeType.ALL,
-          orphanRemoval = true
+    mappedBy = "conference",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
   )
   private List<Agenda> agendas = new ArrayList<>(); // 연관관계 맵핑 - 안건
 
