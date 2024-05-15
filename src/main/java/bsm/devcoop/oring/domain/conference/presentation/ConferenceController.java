@@ -17,17 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class ConferenceController {
-    private final ConferenceService conferenceService;
+  private final ConferenceService conferenceService;
 
-    // 회의 가져오기
-    @PostMapping("/read")
-    public ResponseEntity<?> readConference(@RequestBody ReadConfRequestDto dto) {
-        return conferenceService.read(dto);
-    }
+  // 회의 가져오기
 
-    // 회의 만들기 ( 현재 학번만 return )
-    @PostMapping("/create")
-    public ResponseEntity<?> createConference(@RequestBody MakeConfRequestDto dto) throws GlobalException {
-        return conferenceService.create(dto);
-    }
+  /**
+   * 회의 가져오는 API GET으로 만드는 것이 바람직함
+   * TODO : fix PostMapping -> GetMapping
+   * @param dto
+   * @return
+   */
+
+  @PostMapping("/read")
+  public ResponseEntity<?> readConference(@RequestBody ReadConfRequestDto dto) {
+    return conferenceService.read(dto);
+  }
+
+  // 회의 만들기 ( 현재 학번만 return )
+  @PostMapping("/create")
+  public ResponseEntity<?> createConference(@RequestBody MakeConfRequestDto dto) throws GlobalException {
+    return conferenceService.create(dto);
+  }
 }
