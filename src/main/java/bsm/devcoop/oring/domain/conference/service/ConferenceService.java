@@ -21,43 +21,43 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Slf4j
 public class ConferenceService {
-    private final ConferenceRepository conferenceRepository;
+  private final ConferenceRepository conferenceRepository;
 
-    // 회의 읽기
-    @Transactional
-    public ResponseEntity<?> read(ReadConfRequestDto requestDto) {
-        LocalDate date = requestDto.getDate();
+  // 회의 읽기
+  @Transactional(readOnly = true)
+  public ResponseEntity<?> read(ReadConfRequestDto requestDto) {
+    LocalDate date = requestDto.getDate();
 
-        Conference conf = conferenceRepository.findByDate(date);
-        if(conf == null) {
-            return ResponseEntity.ok(null);
-        }
-
-        ReadConfResponseDto response = ReadConfResponseDto.builder()
-                .date(conf.getDate())
-                .pdfLink(conf.getPdfLink())
-                .agendas(conf.getAgendas())
-                .build();
-
-        return ResponseEntity.ok(response);
+    Conference conf = conferenceRepository.findByDate(date);
+    if (conf == null) {
+      return ResponseEntity.ok(null);
     }
 
-    // 회의 만들기
-    @Transactional
-    public ResponseEntity<?> create(MakeConfRequestDto requestDto) throws GlobalException {
-        if(requestDto.getDate() == null) {
-            throw new GlobalException(ErrorCode.DATE_NOT_CORRECT);
-        }
-        Conference conf = Conference.builder()
-                .date(requestDto.getDate())
-                .pdfLink((requestDto.getPdfLink()))
-                .build();
-        conferenceRepository.save(conf);
+    ReadConfResponseDto response = ReadConfResponseDto.builder()
+      .date(conf.getDate())
+      .pdfLink(conf.getPdfLink())
+      .agendas(conf.getAgendas())
+      .build();
 
-        MakeConfResponseDto response = MakeConfResponseDto.builder()
-                .conference(conf)
-                .build();
+    return ResponseEntity.ok(response);
+  }
 
-        return ResponseEntity.ok(response);
+  // 회의 만들기
+  @Transactional
+  public ResponseEntity<?> create(MakeConfRequestDto requestDto) throws GlobalException {
+    if (requestDto.getDate() == null) {
+      throw new GlobalException(ErrorCode.DATE_NOT_CORRECT);
     }
+    Conference conf = Conference.builder()
+      .date(requestDto.getDate())
+      .pdfLink((requestDto.getPdfLink()))
+      .build();
+    conferenceRepository.save(conf);
+
+    MakeConfResponseDto response = MakeConfResponseDto.builder()
+      .conference(conf)
+      .build();
+
+    return ResponseEntity.ok(response);
+  }
 }
