@@ -3,7 +3,6 @@ package bsm.devcoop.oring.domain.conference.service;
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfRequestDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfResponseDto;
-import bsm.devcoop.oring.domain.conference.presentation.dto.ReadConfRequestDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.ReadConfResponseDto;
 import bsm.devcoop.oring.domain.conference.repository.ConferenceRepository;
 import bsm.devcoop.oring.global.exception.GlobalException;
@@ -21,43 +20,47 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Slf4j
 public class ConferenceService {
-  private final ConferenceRepository conferenceRepository;
+    private final ConferenceRepository conferenceRepository;
 
-  // 회의 읽기
-  @Transactional(readOnly = true)
-  public ResponseEntity<?> read(ReadConfRequestDto requestDto) {
-    LocalDate date = requestDto.getDate();
+    // 회의 읽기
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> read(LocalDate date) {
 
     Conference conf = conferenceRepository.findByDate(date);
     if (conf == null) {
-      return ResponseEntity.ok(null);
+        return ResponseEntity.ok(null);
     }
 
     ReadConfResponseDto response = ReadConfResponseDto.builder()
-      .date(conf.getDate())
-      .pdfLink(conf.getPdfLink())
-      .agendas(conf.getAgendas())
-      .build();
+            .date(conf.getDate())
+            .pdfLink(conf.getPdfLink())
+            .agendas(conf.getAgendas())
+            .build();
 
     return ResponseEntity.ok(response);
-  }
-
-  // 회의 만들기
-  @Transactional
-  public ResponseEntity<?> create(MakeConfRequestDto requestDto) throws GlobalException {
-    if (requestDto.getDate() == null) {
-      throw new GlobalException(ErrorCode.DATE_NOT_CORRECT);
     }
+
+    // 회의 만들기
+    @Transactional
+    public ResponseEntity<?> create(MakeConfRequestDto requestDto) throws GlobalException {
+    LocalDate date = requestDto.getDate();
+
+    if (date == null) {
+        throw new GlobalException(ErrorCode.DATE_NOT_CORRECT);
+    } else if (conferenceRepository.findByDate(date) != null) {
+        throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+    }
+
     Conference conf = Conference.builder()
-      .date(requestDto.getDate())
-      .pdfLink((requestDto.getPdfLink()))
-      .build();
+            .date(requestDto.getDate())
+            .pdfLink((requestDto.getPdfLink()))
+            .build();
     conferenceRepository.save(conf);
 
     MakeConfResponseDto response = MakeConfResponseDto.builder()
-      .conference(conf)
-      .build();
+            .conference(conf)
+            .build();
 
     return ResponseEntity.ok(response);
-  }
+    }
 }
