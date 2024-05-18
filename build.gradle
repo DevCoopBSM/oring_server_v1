@@ -48,3 +48,7 @@ dependencies {
 tasks.named('test') {
   useJUnitPlatform()
 }
+// 빌드 결과물 이름 알기 쉽게 설정
+jar {
+    archiveFileName = 'oring.jar'
+}
