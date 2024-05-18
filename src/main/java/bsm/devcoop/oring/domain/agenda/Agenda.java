@@ -2,6 +2,7 @@ package bsm.devcoop.oring.domain.agenda;
 
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.vote.Vote;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -25,6 +26,7 @@ public class Agenda {
   @ManyToOne
   @MapsId("conferenceId")
   @JoinColumn(name = "conference_date")
+  @JsonBackReference
   private Conference conference;
 
   public void setConference(Conference conference) {

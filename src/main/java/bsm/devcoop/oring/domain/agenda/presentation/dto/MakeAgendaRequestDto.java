@@ -1,2 +1,14 @@
-package bsm.devcoop.oring.domain.agenda.presentation.dto;public class MakeAgendaRequestDto {
+package bsm.devcoop.oring.domain.agenda.presentation.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.time.LocalDate;
+
+@Getter
+@AllArgsConstructor
+public class MakeAgendaRequestDto {
+    private int agendaNo;
+    private LocalDate conferenceDate;
+    private String agendaContent;
 }
