@@ -1,0 +1,26 @@
+stages:
+  - pull
+  - build
+  - deploy
+
+before_script:
+  - cd $PROJECT_PATH
+
+pull:
+  stage: pull
+  script:
+    - git pull
+
+build:
+  stage: build
+  script:
+    - cd $DOCKER_COMPOSE_PATH
+    - docker-compose build oring-back
+
+deploy:
+  stage: deploy
+  script:
+    - cd $DOCKER_COMPOSE_PATH
+    - docker-compose up -d oring-back
+  only:
+    - main

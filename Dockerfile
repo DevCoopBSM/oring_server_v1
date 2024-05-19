@@ -11,6 +11,6 @@ FROM openjdk:17-alpine
 
 WORKDIR /app
 
-COPY --from=build /home/gradle/project/build/libs/oring.jar /app/oring.jar
+COPY --from=build /home/gradle/project/build/libs/oring_server-0.0.1-SNAPSHOT.jar /app/oring.jar
 
-CMD ["java", "-jar", "/app/kiosk.jar"]
+CMD ["java", "-jar", "/app/oring.jar"]
