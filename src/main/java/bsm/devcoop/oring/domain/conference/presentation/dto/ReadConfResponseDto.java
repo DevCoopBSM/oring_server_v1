@@ -1,6 +1,7 @@
 package bsm.devcoop.oring.domain.conference.presentation.dto;
 
 import bsm.devcoop.oring.domain.agenda.Agenda;
+import bsm.devcoop.oring.domain.agenda.presentation.dto.ReadAgendaResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,5 @@ import java.util.List;
 @AllArgsConstructor
 public class ReadConfResponseDto {
     private LocalDate date;
-    private String pdfLink;
-    private List<Agenda> agendas;
+    private String fileLink;
 }

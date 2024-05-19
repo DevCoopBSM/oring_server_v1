@@ -1,6 +1,7 @@
 package bsm.devcoop.oring.domain.conference;
 
 import bsm.devcoop.oring.domain.agenda.Agenda;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,13 +20,14 @@ public class Conference {
   @Id
   private LocalDate date; // 회의 날짜 PK
 
-  private String pdfLink; // PDF 링크
+  private String fileLink; // 첨부 파일 링크
 
   @OneToMany(
     mappedBy = "conference",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
+  @JsonManagedReference
   private List<Agenda> agendas = new ArrayList<>(); // 연관관계 맵핑 - 안건
 
   // add()
@@ -35,8 +37,8 @@ public class Conference {
   }
 
   @Builder
-  public Conference(LocalDate date, String pdfLink) {
+  public Conference(LocalDate date, String fileLink) {
     this.date = date;
-    this.pdfLink = pdfLink;
+    this.fileLink = fileLink;
   }
 }
