@@ -13,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
   @Id
-  private char stuNumber;
-
+  private String stuNumber;
   private String stuCode;
+  private String stuName;
 
   @OneToMany(
     mappedBy = "user",
@@ -30,7 +30,7 @@ public class User {
   }
 
   @Builder
-  public User(char stuNumber, String stuCode, List<Vote> votes) {
+  public User(String stuNumber, String stuCode, String stuName ,List<Vote> votes) {
     this.stuNumber = stuNumber;
     this.stuCode = stuCode;
     this.votes = votes;

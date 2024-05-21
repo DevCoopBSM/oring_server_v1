@@ -17,7 +17,7 @@ public class VoteService {
 
   // 투표하기 ( 현재 학번만 return )
   @Transactional
-  public char vote(VotingRequestDto requestDto) {
+  public String vote(VotingRequestDto requestDto) {
     User user = userRepository.findByStuNumber(requestDto.getStuNumber());
     return user.getStuNumber();
   }
