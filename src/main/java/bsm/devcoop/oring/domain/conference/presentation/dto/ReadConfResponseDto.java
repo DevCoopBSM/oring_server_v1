@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ReadConfResponseDto {
     private LocalDate date;
-    private String pdfLink;
-    private List<Agenda> agendas;
+    private String fileLink;
+    private List<Agenda> agendaList;
 }

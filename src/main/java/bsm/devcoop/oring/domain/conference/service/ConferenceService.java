@@ -1,5 +1,6 @@
 package bsm.devcoop.oring.domain.conference.service;
 
+import bsm.devcoop.oring.domain.agenda.service.AgendaService;
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfRequestDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfResponseDto;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 @Slf4j
 public class ConferenceService {
     private final ConferenceRepository conferenceRepository;
+    private final AgendaService agendaService;
 
     // 회의 읽기
     @Transactional(readOnly = true)
@@ -33,8 +35,8 @@ public class ConferenceService {
 
     ReadConfResponseDto response = ReadConfResponseDto.builder()
             .date(conf.getDate())
-            .pdfLink(conf.getPdfLink())
-            .agendas(conf.getAgendas())
+            .fileLink(conf.getFileLink())
+            .agendaList(agendaService.readAll())
             .build();
 
     return ResponseEntity.ok(response);
@@ -53,7 +55,7 @@ public class ConferenceService {
 
     Conference conf = Conference.builder()
             .date(requestDto.getDate())
-            .pdfLink((requestDto.getPdfLink()))
+            .fileLink((requestDto.getFileLink()))
             .build();
     conferenceRepository.save(conf);
 
