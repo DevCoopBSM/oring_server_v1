@@ -1,6 +1,7 @@
 package bsm.devcoop.oring.domain.conference;
 
 import bsm.devcoop.oring.domain.agenda.Agenda;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,12 +27,13 @@ public class Conference {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
+  @JsonManagedReference
   private List<Agenda> agendaList = new ArrayList<>(); // 연관관계 맵핑 - 안건 리스트
 
   // add()
   public void addAgenda(Agenda agenda) {
     agenda.setConference(this);
-    agendas.add(agenda);
+    agendaList.add(agenda);
   }
 
   @Builder
