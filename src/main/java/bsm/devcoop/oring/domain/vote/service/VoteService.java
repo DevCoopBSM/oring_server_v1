@@ -2,7 +2,6 @@ package bsm.devcoop.oring.domain.vote.service;
 
 import bsm.devcoop.oring.domain.user.User;
 import bsm.devcoop.oring.domain.vote.presentation.dto.VotingRequestDto;
-import bsm.devcoop.oring.domain.user.presentation.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
