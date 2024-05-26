@@ -9,5 +9,5 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MakeConfRequestDto {
     private LocalDate date;
-    private String pdfLink;
+    private String fileLink;
 }
