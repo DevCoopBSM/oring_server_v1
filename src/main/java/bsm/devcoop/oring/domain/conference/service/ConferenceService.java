@@ -32,9 +32,7 @@ public class ConferenceService {
     }
 
     ReadConfResponseDto response = ReadConfResponseDto.builder()
-            .date(conf.getDate())
-            .pdfLink(conf.getPdfLink())
-            .agendas(conf.getAgendas())
+            .conference(conf)
             .build();
 
     return ResponseEntity.ok(response);
@@ -53,7 +51,7 @@ public class ConferenceService {
 
     Conference conf = Conference.builder()
             .date(requestDto.getDate())
-            .pdfLink((requestDto.getPdfLink()))
+            .fileLink((requestDto.getFileLink()))
             .build();
     conferenceRepository.save(conf);
 

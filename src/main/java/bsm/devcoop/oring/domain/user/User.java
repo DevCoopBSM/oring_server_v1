@@ -1,6 +1,7 @@
 package bsm.devcoop.oring.domain.user;
 
 import bsm.devcoop.oring.domain.vote.Vote;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,9 @@ import java.util.List;
 public class User {
   @Id
   private String stuNumber;
+
   private String stuCode;
+
   private String stuName;
 
   @OneToMany(
@@ -22,17 +25,18 @@ public class User {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private List<Vote> votes = new ArrayList<>();
+  @JsonManagedReference
+  private List<Vote> voteList = new ArrayList<>();
 
   public void addVote(Vote vote) {
     vote.setUser(this);
-    votes.add(vote);
+    voteList.add(vote);
   }
 
   @Builder
-  public User(String stuNumber, String stuCode, String stuName ,List<Vote> votes) {
+  public User(String stuNumber, String stuCode, String stuName) {
     this.stuNumber = stuNumber;
     this.stuCode = stuCode;
-    this.votes = votes;
+    this.stuName = stuName;
   }
 }

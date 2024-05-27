@@ -1,18 +1,18 @@
 package bsm.devcoop.oring.domain.vote.presentation.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class VotingRequestDto {
-//    @NotNull
-//    private int date;
-//    private int agendaNo;
+    private LocalDate conferenceDate;
+    private int agendaNo;
     private String stuNumber;
-//    private char vote;
-//    private String reason;
+    private short vote;
+    private String reason;
 }
