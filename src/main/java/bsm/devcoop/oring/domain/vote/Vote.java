@@ -26,7 +26,7 @@ public class Vote {
   @MapsId("agendaId")
   @JoinColumns({
     @JoinColumn(name = "agenda_no"),
-    @JoinColumn(name = "conference_date")
+    @JoinColumn(name = "conferenceDate")
   })
   @JsonBackReference
   private Agenda agenda;
