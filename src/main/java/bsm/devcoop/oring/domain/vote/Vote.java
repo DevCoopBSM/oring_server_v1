@@ -47,6 +47,7 @@ public class Vote {
 
   @Builder
   public Vote(VoteId voteId, short vote, String reason, Agenda agenda, User user) {
+
     this.voteId = voteId;
     this.vote = vote;
     this.reason = reason;

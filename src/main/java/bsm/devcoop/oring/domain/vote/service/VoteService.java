@@ -15,6 +15,8 @@ import bsm.devcoop.oring.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+=======
+>>>>>>> src/main/java/bsm/devcoop/oring/domain/vote/service/VoteService.java
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
