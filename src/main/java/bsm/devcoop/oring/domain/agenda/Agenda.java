@@ -30,7 +30,8 @@ public class Agenda {
 
   @ManyToOne
   @MapsId("conferenceId")
-  @JoinColumn(name = "conferenceDate")
+
+  @JoinColumn(name = "conference_date")
   @JsonBackReference
   private Conference conference;
 
@@ -52,8 +53,9 @@ public class Agenda {
   }
 
   @Builder
-  public Agenda(AgendaId id, String agendaContent) {
+  public Agenda(AgendaId id, String agendaContent, Conference conference) {
     this.id = id;
     this.agendaContent = agendaContent;
+    this.conference = conference;
   }
 }

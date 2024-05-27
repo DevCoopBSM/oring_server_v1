@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
+
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDto dto) throws GlobalException {

@@ -46,10 +46,13 @@ public class Vote {
   }
 
   @Builder
-  public Vote(VoteId voteId, short vote, String reason) {
+  public Vote(VoteId voteId, short vote, String reason, Agenda agenda, User user) {
+
     this.voteId = voteId;
     this.vote = vote;
     this.reason = reason;
+    this.agenda = agenda;
+    this.user = user;
   }
 }
 

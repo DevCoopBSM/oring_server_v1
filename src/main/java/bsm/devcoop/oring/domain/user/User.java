@@ -3,7 +3,10 @@ package bsm.devcoop.oring.domain.user;
 import bsm.devcoop.oring.domain.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;

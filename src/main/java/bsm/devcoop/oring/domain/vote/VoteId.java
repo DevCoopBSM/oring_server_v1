@@ -1,7 +1,7 @@
 package bsm.devcoop.oring.domain.vote;
 
 import bsm.devcoop.oring.domain.agenda.AgendaId;
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

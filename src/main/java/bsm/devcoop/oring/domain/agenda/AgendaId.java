@@ -1,6 +1,6 @@
 package bsm.devcoop.oring.domain.agenda;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
