@@ -26,7 +26,7 @@ public class Vote {
   @MapsId("agendaId")
   @JoinColumns({
     @JoinColumn(name = "agenda_no"),
-    @JoinColumn(name = "conferenceDate")
+    @JoinColumn(name = "conference_date")
   })
   @JsonBackReference
   private Agenda agenda;
@@ -37,6 +37,7 @@ public class Vote {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("studentId")
+  
   @JoinColumn(name = "stu_number")
   @JsonBackReference
   private User user;

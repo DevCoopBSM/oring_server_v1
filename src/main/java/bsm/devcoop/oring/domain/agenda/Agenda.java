@@ -31,7 +31,7 @@ public class Agenda {
   @ManyToOne
   @MapsId("conferenceId")
 
-  @JoinColumn(name = "conferenceDate")
+  @JoinColumn(name = "conference_date")
   @JsonBackReference
   private Conference conference;
 

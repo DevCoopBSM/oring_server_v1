@@ -30,6 +30,7 @@ public class UserService {
 
         AuthResponseDto responseDto = AuthResponseDto.builder()
                 .stuNumber(user.getStuNumber())
+                .stuName(user.getStuName())
                 .build();
 
         return ResponseEntity.ok(responseDto);

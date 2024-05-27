@@ -9,4 +9,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AuthResponseDto {
     private String stuNumber;
+    private String stuName;
 }
