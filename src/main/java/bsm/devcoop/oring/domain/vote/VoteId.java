@@ -1,8 +1,9 @@
 package bsm.devcoop.oring.domain.vote;
 
 import bsm.devcoop.oring.domain.agenda.AgendaId;
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,5 +14,11 @@ import java.io.Serializable;
 @Embeddable
 public class VoteId implements Serializable {
   private AgendaId agendaId;
-  private char studentId;
+  private String studentId;
+
+  @Builder
+  public VoteId(AgendaId agendaId, String studentId) {
+    this.agendaId = agendaId;
+    this.studentId = studentId;
+  }
 }

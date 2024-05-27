@@ -22,9 +22,8 @@ public class SecurityConfig {
       .httpBasic(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(
         request -> request
-                .anyRequest().permitAll()
-                .requestMatchers("/api/conference/create").permitAll()
-                .requestMatchers("/api/conference/read").permitAll()
+          .anyRequest().permitAll()
+        //.requestMatchers("/api/vote/voting").permitAll()
       )
       .sessionManagement(
         session -> session.sessionCreationPolicy(

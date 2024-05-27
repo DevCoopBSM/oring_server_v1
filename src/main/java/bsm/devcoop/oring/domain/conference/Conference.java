@@ -20,7 +20,7 @@ public class Conference {
   @Id
   private LocalDate date; // 회의 날짜 PK
 
-  private String fileLink; // PDF 링크
+  private String fileLink; // 회의 첨부 링크
 
   @OneToMany(
     mappedBy = "conference",
@@ -28,7 +28,7 @@ public class Conference {
     orphanRemoval = true
   )
   @JsonManagedReference
-  private List<Agenda> agendaList = new ArrayList<>(); // 연관관계 맵핑 - 안건
+  private List<Agenda> agendaList = new ArrayList<>(); // 연관관계 맵핑 - 안건 리스트
 
   // add()
   public void addAgenda(Agenda agenda) {

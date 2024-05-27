@@ -1,7 +1,7 @@
-package bsm.devcoop.oring.domain.vote.presentation;
+package bsm.devcoop.oring.domain.user.presentation;
 
-import bsm.devcoop.oring.domain.vote.presentation.dto.VotingRequestDto;
-import bsm.devcoop.oring.domain.vote.service.VoteService;
+import bsm.devcoop.oring.domain.user.presentation.dto.AuthRequestDto;
+import bsm.devcoop.oring.domain.user.service.UserService;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/vote")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Slf4j
-public class VoteController {
-  private final VoteService voteService;
+public class UserController {
+    private final UserService userService;
 
-  @PostMapping("/voting")
-  public ResponseEntity<?> voting(@RequestBody VotingRequestDto dto) throws GlobalException {
-    return voteService.voting(dto);
-  }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequestDto dto) throws GlobalException {
+        return userService.authByCode(dto);
+    }
 }

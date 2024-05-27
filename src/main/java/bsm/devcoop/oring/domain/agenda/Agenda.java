@@ -2,6 +2,8 @@ package bsm.devcoop.oring.domain.agenda;
 
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.vote.Vote;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,9 +24,14 @@ public class Agenda {
 
   private String agendaContent; // 안건 내용
 
+  public void setAgendaContent(String agendaContent) {
+    this.agendaContent = agendaContent;
+  }
+
   @ManyToOne
   @MapsId("conferenceId")
   @JoinColumn(name = "conference_date")
+  @JsonBackReference
   private Conference conference;
 
   public void setConference(Conference conference) {
@@ -36,16 +43,18 @@ public class Agenda {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private List<Vote> votes = new ArrayList<>();
+  @JsonManagedReference
+  private List<Vote> voteList = new ArrayList<>();
 
   public void addVote(Vote vote) {
     vote.setAgenda(this);
-    votes.add(vote);
+    voteList.add(vote);
   }
 
   @Builder
-  public Agenda(AgendaId id, String agendaContent) {
+  public Agenda(AgendaId id, String agendaContent, Conference conference) {
     this.id = id;
     this.agendaContent = agendaContent;
+    this.conference = conference;
   }
 }
