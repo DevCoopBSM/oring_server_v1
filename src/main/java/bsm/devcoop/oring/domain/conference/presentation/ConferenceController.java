@@ -3,8 +3,10 @@ package bsm.devcoop.oring.domain.conference.presentation;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfRequestDto;
 import bsm.devcoop.oring.domain.conference.service.ConferenceService;
 import bsm.devcoop.oring.global.exception.GlobalException;
+import io.swagger.v3.oas.annotations.headers.Header;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +27,8 @@ public class ConferenceController {
 
   // 회의 만들기
   @PostMapping("/createConf")
-  public ResponseEntity<?> createConference(@RequestBody MakeConfRequestDto dto) throws GlobalException {
-    return conferenceService.create(dto);
+  public ResponseEntity<?> createConference(@RequestHeader String token, @RequestBody MakeConfRequestDto dto) throws GlobalException {
+    return conferenceService.create(token, dto);
   }
 
   // file 읽기 ; 현재 사용 X

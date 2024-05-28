@@ -10,6 +10,7 @@ import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +25,15 @@ public class AgendaService {
     private final ConferenceRepository conferenceRepository;
     private final AgendaRepository agendaRepository;
 
-    Boolean checkToken(String token) throws GlobalException {
-        return token.equals("someString");
+    @Value("${my.token}")
+    private String tokenKey;
+
+    Boolean checkToken(String token) {
+        return token.equals(tokenKey);
     }
 
     // 안건 읽기
-    @Transactional
+    @Transactional(readOnly = true)
     public Agenda read(LocalDate conferenceDate, int agendaNo) throws GlobalException {
         Conference conference = conferenceRepository.findByDate(conferenceDate);
         if (conference == null) {
@@ -49,7 +53,9 @@ public class AgendaService {
 
     // 안건 만들기
     @Transactional
-    public ResponseEntity<?> create(MakeAgendaRequestDto requestDto) throws GlobalException {
+    public ResponseEntity<?> create(String token, MakeAgendaRequestDto requestDto) throws GlobalException {
+        if(checkToken(token)) throw new GlobalException(ErrorCode.FORBIDDEN);
+
         int agendaNo = requestDto.getAgendaNo();
         LocalDate conferenceDate = requestDto.getConferenceDate();
         String agendaContent = requestDto.getAgendaContent();
@@ -88,7 +94,9 @@ public class AgendaService {
 
     // 안건 내용 수정
     @Transactional
-    public ResponseEntity<?> update(UpdateAgendaRequestDto requestDto) throws GlobalException {
+    public ResponseEntity<?> update(String token, UpdateAgendaRequestDto requestDto) throws GlobalException {
+        if(checkToken(token)) throw new GlobalException(ErrorCode.FORBIDDEN);
+
         LocalDate conferenceDate = requestDto.getConferenceDate();
         int agendaNo = requestDto.getAgendaNo();
         String newAgendaContent = requestDto.getAgendaContent();
@@ -115,7 +123,9 @@ public class AgendaService {
 
     // 안건 삭제
     @Transactional
-    public ResponseEntity<?> delete(LocalDate conferenceDate, int agendaNo) throws GlobalException {
+    public ResponseEntity<?> delete(String token, LocalDate conferenceDate, int agendaNo) throws GlobalException {
+        if(checkToken(token)) throw new GlobalException(ErrorCode.FORBIDDEN);
+
         Agenda agenda = read(conferenceDate, agendaNo);
         if(agenda == null) {
             throw new GlobalException(ErrorCode.AGENDA_NOT_FOUND);
@@ -133,7 +143,9 @@ public class AgendaService {
 
     // 투표 가능 여부 수정
     @Transactional
-    public ResponseEntity<?> updateIsPossible(UpdateIsPossibleRequestDto requestDto) throws GlobalException {
+    public ResponseEntity<?> updateIsPossible(String token, UpdateIsPossibleRequestDto requestDto) throws GlobalException {
+        if(checkToken(token)) throw new GlobalException(ErrorCode.FORBIDDEN);
+
         LocalDate conferenceDate = requestDto.getConferenceDate();
         int agendaNo = requestDto.getAgendaNo();
 

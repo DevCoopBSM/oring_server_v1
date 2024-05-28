@@ -20,8 +20,8 @@ public class AgendaController {
     private final AgendaService agendaService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createAgenda(@RequestBody MakeAgendaRequestDto dto) throws GlobalException {
-        return agendaService.create(dto);
+    public ResponseEntity<?> createAgenda(@RequestHeader String token, @RequestBody MakeAgendaRequestDto dto) throws GlobalException {
+        return agendaService.create(token, dto);
     }
 
     @GetMapping("/read")
@@ -30,17 +30,17 @@ public class AgendaController {
     }
 
     @PostMapping("/updateAgenda")
-    public ResponseEntity<?> updateAgenda(@RequestBody UpdateAgendaRequestDto dto) throws GlobalException {
-        return agendaService.update(dto);
+    public ResponseEntity<?> updateAgenda(@RequestHeader String token, @RequestBody UpdateAgendaRequestDto dto) throws GlobalException {
+        return agendaService.update(token, dto);
     }
 
     @PostMapping("/updateIsPossible")
-    public ResponseEntity<?> updateIsPossible(@RequestBody UpdateIsPossibleRequestDto dto) throws GlobalException {
-        return agendaService.updateIsPossible(dto);
+    public ResponseEntity<?> updateIsPossible(@RequestHeader String token, @RequestBody UpdateIsPossibleRequestDto dto) throws GlobalException {
+        return agendaService.updateIsPossible(token, dto);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteAgenda(@RequestParam LocalDate conferenceDate, int agendaNo) throws GlobalException {
-        return agendaService.delete(conferenceDate, agendaNo);
+    public ResponseEntity<?> deleteAgenda(@RequestHeader String token, @RequestParam LocalDate conferenceDate, int agendaNo) throws GlobalException {
+        return agendaService.delete(token, conferenceDate, agendaNo);
     }
 }
