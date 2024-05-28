@@ -10,10 +10,12 @@ import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 
 @Service
@@ -22,6 +24,13 @@ import java.time.LocalDate;
 @Slf4j
 public class ConferenceService {
     private final ConferenceRepository conferenceRepository;
+
+    @Value("${my.token}")
+    private String tokenKey;
+
+    Boolean checkToken(String token) {
+        return token.equals(tokenKey);
+    }
 
     // 회의 읽기
     @Transactional(readOnly = true)
@@ -40,7 +49,8 @@ public class ConferenceService {
 
     // 회의 만들기
     @Transactional
-    public ResponseEntity<?> create(MakeConfRequestDto requestDto) throws GlobalException {
+    public ResponseEntity<?> create(String token, MakeConfRequestDto requestDto) throws GlobalException {
+        if(checkToken(token)) throw new GlobalException(ErrorCode.FORBIDDEN);
         LocalDate date = requestDto.getDate();
 
         if (date == null) {
