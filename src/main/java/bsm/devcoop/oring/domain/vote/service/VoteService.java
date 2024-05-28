@@ -34,52 +34,53 @@ public class VoteService {
     // 투표하기
     @Transactional
     public ResponseEntity<?> voting(VotingRequestDto requestDto) throws GlobalException {
-        LocalDate conferenceDate = requestDto.getConferenceDate();
+        LocalDate conferenceDate = LocalDate.of(2024, 5, 29);
         int agendaNo = requestDto.getAgendaNo();
         String stuNumber = requestDto.getStuNumber();
         short voteCode = requestDto.getVote();
         String reason = requestDto.getReason();
 
-        Agenda agenda = agendaService.read(conferenceDate, agendaNo);
-        User user = userRepository.findByStuNumber(stuNumber);
-
-        if (agenda == null) {
-            throw new GlobalException(ErrorCode.AGENDA_NOT_FOUND);
-        } else if (user == null) {
-            throw new GlobalException(ErrorCode.USER_NOT_FOUND);
-        } else if (voteCode == 0 && reason == null) {
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
-        } if(agenda.getIsPossible() == '0') {
-            throw new GlobalException(ErrorCode.FORBIDDEN);
-        }
-
-        AgendaId agendaId = AgendaId.builder()
-                .conferenceId(conferenceDate)
-                .agendaNo(agendaNo)
-                .build();
-
-        VoteId voteId = VoteId.builder()
-                .agendaId(agendaId)
-                .studentId(stuNumber)
-                .build();
-
-        Vote vote = Vote.builder()
-                .voteId(voteId)
-                .vote(voteCode)
-                .reason(reason)
-                .agenda(agenda)
-                .user(user)
-                .build();
-
         try {
-            voteRepository.save(vote);
-        } catch (DataIntegrityViolationException e) {
-            throw new GlobalException(ErrorCode.DUPLICATE_DATA); // 적절한 에러 코드를 사용하세요
-        }
-        VotingResponseDto responseDto = VotingResponseDto.builder()
-                .isSuccess(true)
-                .build();
+            Agenda agenda = agendaService.read(conferenceDate, agendaNo);
+            User user = userRepository.findByStuNumber(stuNumber);
+            if (voteCode == 0 && reason == null) {
+                throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+            } else if (agenda.getIsPossible() == '0') {
+                throw new GlobalException(ErrorCode.FORBIDDEN);
+            }
 
-        return ResponseEntity.ok(responseDto);
+            AgendaId agendaId = AgendaId.builder()
+                    .conferenceId(conferenceDate)
+                    .agendaNo(agendaNo)
+                    .build();
+
+            VoteId voteId = VoteId.builder()
+                    .agendaId(agendaId)
+                    .studentId(stuNumber)
+                    .build();
+
+            Vote vote = Vote.builder()
+                    .voteId(voteId)
+                    .vote(voteCode)
+                    .reason(reason)
+                    .agenda(agenda)
+                    .user(user)
+                    .build();
+
+            voteRepository.save(vote);
+
+            VotingResponseDto responseDto = VotingResponseDto.builder()
+                    .isSuccess(true)
+                    .build();
+
+            return ResponseEntity.ok(responseDto);
+
+        } catch (DataIntegrityViolationException e) {
+            throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+        } catch (NullPointerException e) {
+            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+        } catch(Exception e) {
+            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 }
