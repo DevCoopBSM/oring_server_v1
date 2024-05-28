@@ -49,7 +49,7 @@ public class VoteService {
             throw new GlobalException(ErrorCode.USER_NOT_FOUND);
         } else if (voteCode == 0 && reason == null) {
             throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
-        } if(agenda.getIsPossible() == '0') {
+        } else if(agenda.getIsPossible() == '0') {
             throw new GlobalException(ErrorCode.FORBIDDEN);
         }
 
