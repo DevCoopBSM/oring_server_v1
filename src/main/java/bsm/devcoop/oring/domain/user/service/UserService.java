@@ -22,17 +22,17 @@ public class UserService {
     // 학생 인증하기
     @Transactional
     public ResponseEntity<?> authByCode(AuthRequestDto requestDto) throws GlobalException {
-        User user = userRepository.findByStuCode(requestDto.getStuCode());
+        try {
+            User user = userRepository.findByStuCode(requestDto.getStuCode());
 
-        if (user == null) {
-            throw new GlobalException(ErrorCode.USER_NOT_FOUND);
+            AuthResponseDto responseDto = AuthResponseDto.builder()
+                    .stuNumber(user.getStuNumber())
+                    .stuName(user.getStuName())
+                    .build();
+
+            return ResponseEntity.ok(responseDto);
+        } catch (NullPointerException e) {
+            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
-
-        AuthResponseDto responseDto = AuthResponseDto.builder()
-                .stuNumber(user.getStuNumber())
-                .stuName(user.getStuName())
-                .build();
-
-        return ResponseEntity.ok(responseDto);
     }
 }

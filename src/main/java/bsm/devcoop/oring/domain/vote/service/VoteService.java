@@ -44,9 +44,11 @@ public class VoteService {
             Agenda agenda = agendaService.read(conferenceDate, agendaNo);
             User user = userRepository.findByStuNumber(stuNumber);
             if (voteCode == 0 && reason == null) {
-                throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+                // throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+                return ResponseEntity.notFound().build();
             } else if (agenda.getIsPossible() == '0') {
-                throw new GlobalException(ErrorCode.FORBIDDEN);
+                // throw new GlobalException(ErrorCode.FORBIDDEN);
+                return  ResponseEntity.status(401).body("FORBIDDEN" + "AGENDA NOT OPENED");
             }
 
             AgendaId agendaId = AgendaId.builder()
@@ -76,11 +78,14 @@ public class VoteService {
             return ResponseEntity.ok(responseDto);
 
         } catch (DataIntegrityViolationException e) {
-            throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+            // throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+            return ResponseEntity.status(409).body(ErrorCode.DUPLICATE_DATA);
         } catch (NullPointerException e) {
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+            // throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+            return ResponseEntity.status(404).body(ErrorCode.DATA_NOT_FOUND);
         } catch(Exception e) {
-            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+            // throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(405).body(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }

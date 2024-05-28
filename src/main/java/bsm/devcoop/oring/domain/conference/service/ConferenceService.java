@@ -50,43 +50,53 @@ public class ConferenceService {
     // 회의 만들기
     @Transactional
     public ResponseEntity<?> create(String token, MakeConfRequestDto requestDto) throws GlobalException {
-        if(checkToken(token)) throw new GlobalException(ErrorCode.FORBIDDEN);
+        if(!checkToken(token)) {
+            // throw new GlobalException(ErrorCode.FORBIDDEN);
+            return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
+        }
         LocalDate date = requestDto.getDate();
 
         if (date == null) {
-            throw new GlobalException(ErrorCode.DATE_NOT_CORRECT);
-        } else if (conferenceRepository.findByDate(date) != null) {
-            throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
 
-        Conference conf = Conference.builder()
-                .date(requestDto.getDate())
-                .fileLink((requestDto.getFileLink()))
-                .build();
-        conferenceRepository.save(conf);
+        try {
+            conferenceRepository.findByDate(date);
 
-        MakeConfResponseDto response = MakeConfResponseDto.builder()
-                .conference(conf)
-                .build();
+            Conference conf = Conference.builder()
+                    .date(requestDto.getDate())
+                    .fileLink((requestDto.getFileLink()))
+                    .build();
+            conferenceRepository.save(conf);
 
-        return ResponseEntity.ok(response);
+
+            MakeConfResponseDto response = MakeConfResponseDto.builder()
+                    .conference(conf)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch(NullPointerException e) {
+            throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+        }
     }
 
     // file ( pdf ) 읽기 ; 현재 사용 X
     @Transactional
     public ResponseEntity<?> readFile() throws GlobalException {
         LocalDate date = LocalDate.of(2024, 5, 29);
-        Conference conf = conferenceRepository.findByDate(date);
-        if (conf == null) {
-            throw new GlobalException(ErrorCode.CONFERENCE_NOT_FOUND);
+
+        try {
+            Conference conf = conferenceRepository.findByDate(date);
+
+            String fileLink = conf.getFileLink();
+
+            ReadFileResponseDto responseDto = ReadFileResponseDto.builder()
+                    .fileLink(fileLink)
+                    .build();
+
+            return ResponseEntity.ok(responseDto);
+        } catch (NullPointerException e) {
+            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
-
-        String fileLink = conf.getFileLink();
-
-        ReadFileResponseDto responseDto = ReadFileResponseDto.builder()
-                .fileLink(fileLink)
-                .build();
-
-        return ResponseEntity.ok(responseDto);
     }
 }
