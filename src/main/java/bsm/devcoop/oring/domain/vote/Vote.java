@@ -14,32 +14,30 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote {
-  // agendaId(agendaId) & stuNumber(student) 묶음
   @EmbeddedId
-  private VoteId voteId;
+  private VoteId voteId; // 복합 키, 엔티티와 다르게 선언한 후 클래스로 가져와야 한다
 
-  private short vote; // 찬성 1 or 반대 0
+  private short vote; // 찬성 Y or 반대 N / 안건 번호 1, 2, 3 ... , n
 
-  private String reason; // 반대 이유
+  private String reason; // 반대 이유 ( vote == 'N' 이라면 반드시 존재해야 한다 )
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @MapsId("agendaId")
+  @ManyToOne(fetch = FetchType.LAZY) // one agenda -> many vote
+  @MapsId("agendaId") // VoteId 내 agendaId와 연결
   @JoinColumns({
     @JoinColumn(name = "agenda_no"),
     @JoinColumn(name = "conference_date")
   })
-  @JsonBackReference
+  @JsonBackReference // many 에게 붙는 어노테이션, 순환 루프 방지
   private Agenda agenda;
 
   public void setAgenda(Agenda agenda) {
     this.agenda = agenda;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @MapsId("studentId")
-  
+  @ManyToOne(fetch = FetchType.LAZY) // one user -> many vote
+  @MapsId("studentId") // User 내 studentId와 연결
   @JoinColumn(name = "stu_number")
-  @JsonBackReference
+  @JsonBackReference // many 에게 붙는 어노테이션, 순환 루프 방지
   private User user;
 
   public void setUser(User user) {
@@ -48,7 +46,6 @@ public class Vote {
 
   @Builder
   public Vote(VoteId voteId, short vote, String reason, Agenda agenda, User user) {
-
     this.voteId = voteId;
     this.vote = vote;
     this.reason = reason;

@@ -4,6 +4,7 @@ import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfRequestDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfResponseDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.ReadConfResponseDto;
+import bsm.devcoop.oring.domain.conference.presentation.dto.ReadFileResponseDto;
 import bsm.devcoop.oring.domain.conference.repository.ConferenceRepository;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
@@ -24,41 +25,58 @@ public class ConferenceService {
 
     // 회의 읽기
     @Transactional(readOnly = true)
-    public ResponseEntity<?> read(LocalDate date) {
+    public ResponseEntity<?> readConf(LocalDate date) {
+        Conference conf = conferenceRepository.findByDate(date);
+        if (conf == null) {
+            return ResponseEntity.ok(null);
+        }
 
-    Conference conf = conferenceRepository.findByDate(date);
-    if (conf == null) {
-        return ResponseEntity.ok(null);
-    }
+        ReadConfResponseDto response = ReadConfResponseDto.builder()
+                .conference(conf)
+                .build();
 
-    ReadConfResponseDto response = ReadConfResponseDto.builder()
-            .conference(conf)
-            .build();
-
-    return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     // 회의 만들기
     @Transactional
     public ResponseEntity<?> create(MakeConfRequestDto requestDto) throws GlobalException {
-    LocalDate date = requestDto.getDate();
+        LocalDate date = requestDto.getDate();
 
-    if (date == null) {
-        throw new GlobalException(ErrorCode.DATE_NOT_CORRECT);
-    } else if (conferenceRepository.findByDate(date) != null) {
-        throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+        if (date == null) {
+            throw new GlobalException(ErrorCode.DATE_NOT_CORRECT);
+        } else if (conferenceRepository.findByDate(date) != null) {
+            throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+        }
+
+        Conference conf = Conference.builder()
+                .date(requestDto.getDate())
+                .fileLink((requestDto.getFileLink()))
+                .build();
+        conferenceRepository.save(conf);
+
+        MakeConfResponseDto response = MakeConfResponseDto.builder()
+                .conference(conf)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
-    Conference conf = Conference.builder()
-            .date(requestDto.getDate())
-            .fileLink((requestDto.getFileLink()))
-            .build();
-    conferenceRepository.save(conf);
+    // file ( pdf ) 읽기 ; 현재 사용 X
+    @Transactional
+    public ResponseEntity<?> readFile() throws GlobalException {
+        LocalDate date = LocalDate.of(2024, 5, 29);
+        Conference conf = conferenceRepository.findByDate(date);
+        if (conf == null) {
+            throw new GlobalException(ErrorCode.CONFERENCE_NOT_FOUND);
+        }
 
-    MakeConfResponseDto response = MakeConfResponseDto.builder()
-            .conference(conf)
-            .build();
+        String fileLink = conf.getFileLink();
 
-    return ResponseEntity.ok(response);
+        ReadFileResponseDto responseDto = ReadFileResponseDto.builder()
+                .fileLink(fileLink)
+                .build();
+
+        return ResponseEntity.ok(responseDto);
     }
 }
