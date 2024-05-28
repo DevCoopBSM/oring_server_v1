@@ -2,10 +2,7 @@ package bsm.devcoop.oring.domain.agenda.service;
 
 import bsm.devcoop.oring.domain.agenda.Agenda;
 import bsm.devcoop.oring.domain.agenda.AgendaId;
-import bsm.devcoop.oring.domain.agenda.presentation.dto.MakeAgendaRequestDto;
-import bsm.devcoop.oring.domain.agenda.presentation.dto.MakeAgendaResponseDto;
-import bsm.devcoop.oring.domain.agenda.presentation.dto.UpdateAgendaRequestDto;
-import bsm.devcoop.oring.domain.agenda.presentation.dto.UpdateAgendaResponseDto;
+import bsm.devcoop.oring.domain.agenda.presentation.dto.*;
 import bsm.devcoop.oring.domain.agenda.repository.AgendaRepository;
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.conference.repository.ConferenceRepository;
@@ -72,6 +69,7 @@ public class AgendaService {
         Agenda agenda = Agenda.builder()
                 .id(agendaId)
                 .agendaContent(agendaContent)
+                .isPossible('0') // default : 투표 불가능, 0
                 .build();
 
         conference.addAgenda(agenda);
@@ -127,5 +125,33 @@ public class AgendaService {
         agendaRepository.deleteById(agendaId);
 
         return ResponseEntity.ok(true); // 삭제된 후 ID는 어떻게 해야 하는가???
+    }
+
+    // 투표 가능 여부 수정
+    @Transactional
+    public ResponseEntity<?> updateIsPossible(UpdateIsPossibleRequestDto requestDto) throws GlobalException {
+        LocalDate conferenceDate = requestDto.getConferenceDate();
+        int agendaNo = requestDto.getAgendaNo();
+
+        Agenda agenda = read(conferenceDate, agendaNo);
+
+        if (agenda == null) {
+            throw new GlobalException(ErrorCode.AGENDA_NOT_FOUND);
+        }
+
+        char isPossible = requestDto.getIsPossible();
+
+        if(agenda.getIsPossible() == isPossible) {
+            return ResponseEntity.ok("변동 사항이 존재하지 않습니다.");
+        }
+
+        agenda.setIsPossible(isPossible);
+        agendaRepository.save(agenda);
+
+        UpdateIsPossibleResponseDto responseDto = UpdateIsPossibleResponseDto.builder()
+                .agenda(agenda)
+                .build();
+
+        return ResponseEntity.ok(responseDto);
     }
 }

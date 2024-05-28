@@ -2,6 +2,7 @@ package bsm.devcoop.oring.domain.agenda.presentation;
 
 import bsm.devcoop.oring.domain.agenda.presentation.dto.MakeAgendaRequestDto;
 import bsm.devcoop.oring.domain.agenda.presentation.dto.UpdateAgendaRequestDto;
+import bsm.devcoop.oring.domain.agenda.presentation.dto.UpdateIsPossibleRequestDto;
 import bsm.devcoop.oring.domain.agenda.service.AgendaService;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,19 @@ public class AgendaController {
         return agendaService.create(dto);
     }
 
-    @PostMapping("/update")
+    @GetMapping("/read")
+    public ResponseEntity<?> readAgenda(@RequestParam LocalDate date, int agendaNo) throws GlobalException {
+        return ResponseEntity.ok(agendaService.read(date, agendaNo));
+    }
+
+    @PostMapping("/updateAgenda")
     public ResponseEntity<?> updateAgenda(@RequestBody UpdateAgendaRequestDto dto) throws GlobalException {
         return agendaService.update(dto);
+    }
+
+    @PostMapping("/updateIsPossible")
+    public ResponseEntity<?> updateIsPossible(@RequestBody UpdateIsPossibleRequestDto dto) throws GlobalException {
+        return agendaService.updateIsPossible(dto);
     }
 
     @DeleteMapping("/delete")

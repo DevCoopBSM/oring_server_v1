@@ -18,14 +18,20 @@ public class ConferenceController {
   private final ConferenceService conferenceService;
 
   // 회의 가져오기
-  @GetMapping("/readConference")
+  @GetMapping("/readConf")
   public ResponseEntity<?> readConference(@RequestParam LocalDate date) {
-    return conferenceService.read(date);
+    return conferenceService.readConf(date);
   }
 
-  // 회의 만들기 ( 현재 학번만 return )
-  @PostMapping("/createConference")
+  // 회의 만들기
+  @PostMapping("/createConf")
   public ResponseEntity<?> createConference(@RequestBody MakeConfRequestDto dto) throws GlobalException {
     return conferenceService.create(dto);
+  }
+
+  // file 읽기 ; 현재 사용 X
+  @GetMapping("/readFile")
+  public ResponseEntity<?> readFile() throws GlobalException {
+    return conferenceService.readFile();
   }
 }

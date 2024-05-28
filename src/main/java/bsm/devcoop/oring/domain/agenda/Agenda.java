@@ -5,6 +5,7 @@ import bsm.devcoop.oring.domain.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,21 +19,26 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Agenda {
-  // agendaNo & date(conference)(pk) 한 번에 묶어야 함
   @EmbeddedId
-  private AgendaId id;
+  private AgendaId id; // 복합 키, 엔티티와 다르게 선언한 후 클래스로 가져와야 한다
 
   private String agendaContent; // 안건 내용
+
+  @NotNull
+  private char isPossible; // default : 0, 가능 시 1
+
+  public void setIsPossible(char isPossible) {
+    this.isPossible = isPossible;
+  }
 
   public void setAgendaContent(String agendaContent) {
     this.agendaContent = agendaContent;
   }
 
-  @ManyToOne
-  @MapsId("conferenceId")
-
+  @ManyToOne(fetch = FetchType.LAZY) // one conf -> many agenda
+  @MapsId("conferenceId") // AgendaId 내 conferenceId와 연결
   @JoinColumn(name = "conference_date")
-  @JsonBackReference
+  @JsonBackReference // many 에게 붙는 어노테이션, 순환 루프 방지
   private Conference conference;
 
   public void setConference(Conference conference) {
@@ -43,19 +49,15 @@ public class Agenda {
     mappedBy = "agenda",
     cascade = CascadeType.ALL,
     orphanRemoval = true
-  )
-  @JsonManagedReference
+  ) // one agenda -> many vote
+  @JsonManagedReference // one 에게 붙는 어노테이션, 순환 루프 방지
   private List<Vote> voteList = new ArrayList<>();
 
-  public void addVote(Vote vote) {
-    vote.setAgenda(this);
-    voteList.add(vote);
-  }
-
   @Builder
-  public Agenda(AgendaId id, String agendaContent, Conference conference) {
+  public Agenda(AgendaId id, String agendaContent, char isPossible, Conference conference) {
     this.id = id;
     this.agendaContent = agendaContent;
-    this.conference = conference;
+    this.isPossible = isPossible;
+    this.conference = conference; // 맵핑 중 one 으로 연결되는 필드 또한 빌드
   }
 }
