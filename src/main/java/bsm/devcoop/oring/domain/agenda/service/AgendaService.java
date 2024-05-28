@@ -24,6 +24,10 @@ public class AgendaService {
     private final ConferenceRepository conferenceRepository;
     private final AgendaRepository agendaRepository;
 
+    Boolean checkToken(String token) throws GlobalException {
+        return token.equals("someString");
+    }
+
     // 안건 읽기
     @Transactional
     public Agenda read(LocalDate conferenceDate, int agendaNo) throws GlobalException {
@@ -142,7 +146,7 @@ public class AgendaService {
         char isPossible = requestDto.getIsPossible();
 
         if(agenda.getIsPossible() == isPossible) {
-            return ResponseEntity.ok("변동 사항이 존재하지 않습니다.");
+            return ResponseEntity.ok("Nothing change");
         }
 
         agenda.setIsPossible(isPossible);
