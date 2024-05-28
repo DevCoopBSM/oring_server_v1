@@ -21,9 +21,15 @@ public class ConferenceController {
 
   // 회의 가져오기
   @GetMapping("/readConf")
-  public ResponseEntity<?> readConference(@RequestParam LocalDate date) {
-    return conferenceService.readConf(date);
+  public ResponseEntity<?> readConference(@RequestHeader String token, @RequestParam LocalDate date) {
+    return conferenceService.readConf(token, date);
   }
+
+    // 특정 날짜의 아젠다만 가져오는 엔드포인트 추가
+    @GetMapping("/readAgenda")
+    public ResponseEntity<?> readAgenda(@RequestParam LocalDate date) {
+        return conferenceService.readAgenda(date);
+    }
 
   // 회의 만들기
   @PostMapping("/createConf")

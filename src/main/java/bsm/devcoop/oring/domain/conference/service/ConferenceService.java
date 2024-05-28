@@ -1,5 +1,6 @@
 package bsm.devcoop.oring.domain.conference.service;
 
+import bsm.devcoop.oring.domain.agenda.Agenda;
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfRequestDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfResponseDto;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
+import java.util.List; // 추가된 import
 
 @Service
 @Transactional
@@ -34,7 +36,11 @@ public class ConferenceService {
 
     // 회의 읽기
     @Transactional(readOnly = true)
-    public ResponseEntity<?> readConf(LocalDate date) {
+    public ResponseEntity<?> readConf(String token, LocalDate date) {
+        if(!checkToken(token)) {
+            // throw new GlobalException(ErrorCode.FORBIDDEN);
+            return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
+        }
         Conference conf = conferenceRepository.findByDate(date);
         if (conf == null) {
             return ResponseEntity.ok(null);
@@ -78,6 +84,18 @@ public class ConferenceService {
         } catch(NullPointerException e) {
             throw new GlobalException(ErrorCode.DUPLICATE_DATA);
         }
+    }
+
+    // 새로운 아젠다만 가져오는 메소드 추가
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> readAgenda(LocalDate date) {
+        Conference conf = conferenceRepository.findByDate(date);
+        if (conf == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<Agenda> agendas = conf.getAgendaList();
+        return ResponseEntity.ok(agendas);
     }
 
     // file ( pdf ) 읽기 ; 현재 사용 X
