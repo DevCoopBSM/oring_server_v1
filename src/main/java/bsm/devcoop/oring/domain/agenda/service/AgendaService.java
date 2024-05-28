@@ -57,10 +57,17 @@ public class AgendaService {
         if(checkToken(token)) throw new GlobalException(ErrorCode.FORBIDDEN);
 
         int agendaNo = requestDto.getAgendaNo();
+        System.out.println("agendaNo = " + agendaNo);
+
         LocalDate conferenceDate = requestDto.getConferenceDate();
+        System.out.println("conferenceDate = " + conferenceDate);
+
         String agendaContent = requestDto.getAgendaContent();
+        System.out.println("agendaContent = " + agendaContent);
 
         Conference conference = conferenceRepository.findByDate(conferenceDate);
+        System.out.println("conference = " + conference);
+
         if (conference == null) {
             throw new GlobalException(ErrorCode.CONFERENCE_NOT_FOUND);
         } else if(agendaContent == null) {
@@ -71,6 +78,7 @@ public class AgendaService {
                 .agendaNo(agendaNo)
                 .conferenceId(conferenceDate)
                 .build();
+        System.out.println("agendaId = " + agendaId);
 
         if (agendaRepository.findById(agendaId).isPresent()) {
             throw new GlobalException(ErrorCode.DUPLICATE_DATA);
