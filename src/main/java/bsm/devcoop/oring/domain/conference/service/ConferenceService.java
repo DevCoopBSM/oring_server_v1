@@ -1,14 +1,16 @@
 package bsm.devcoop.oring.domain.conference.service;
 
-import bsm.devcoop.oring.domain.agenda.Agenda;
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfRequestDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.MakeConfResponseDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.ReadConfResponseDto;
 import bsm.devcoop.oring.domain.conference.presentation.dto.ReadFileResponseDto;
 import bsm.devcoop.oring.domain.conference.repository.ConferenceRepository;
+import bsm.devcoop.oring.domain.agenda.presentation.dto.ReadAgendaResponseDto;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
+import bsm.devcoop.oring.domain.agenda.Agenda;
+import bsm.devcoop.oring.domain.agenda.repository.AgendaRepository; 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.GeneralSecurityException;
 import java.time.LocalDate;
-import java.util.List; // 추가된 import
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -26,6 +28,7 @@ import java.util.List; // 추가된 import
 @Slf4j
 public class ConferenceService {
     private final ConferenceRepository conferenceRepository;
+    private final AgendaRepository agendaRepository; 
 
     @Value("${my.token}")
     private String tokenKey;
@@ -37,8 +40,7 @@ public class ConferenceService {
     // 회의 읽기
     @Transactional(readOnly = true)
     public ResponseEntity<?> readConf(String token, LocalDate date) {
-        if(!checkToken(token)) {
-            // throw new GlobalException(ErrorCode.FORBIDDEN);
+        if (!checkToken(token)) {
             return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
         Conference conf = conferenceRepository.findByDate(date);
@@ -56,8 +58,7 @@ public class ConferenceService {
     // 회의 만들기
     @Transactional
     public ResponseEntity<?> create(String token, MakeConfRequestDto requestDto) throws GlobalException {
-        if(!checkToken(token)) {
-            // throw new GlobalException(ErrorCode.FORBIDDEN);
+        if (!checkToken(token)) {
             return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
         LocalDate date = requestDto.getDate();
@@ -71,31 +72,18 @@ public class ConferenceService {
 
             Conference conf = Conference.builder()
                     .date(requestDto.getDate())
-                    .fileLink((requestDto.getFileLink()))
+                    .fileLink(requestDto.getFileLink())
                     .build();
             conferenceRepository.save(conf);
-
 
             MakeConfResponseDto response = MakeConfResponseDto.builder()
                     .conference(conf)
                     .build();
 
             return ResponseEntity.ok(response);
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             throw new GlobalException(ErrorCode.DUPLICATE_DATA);
         }
-    }
-
-    // 새로운 아젠다만 가져오는 메소드 추가
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> readAgenda(LocalDate date) {
-        Conference conf = conferenceRepository.findByDate(date);
-        if (conf == null) {
-            return ResponseEntity.noContent().build();
-        }
-
-        List<Agenda> agendas = conf.getAgendaList();
-        return ResponseEntity.ok(agendas);
     }
 
     // file ( pdf ) 읽기 ; 현재 사용 X
@@ -116,5 +104,21 @@ public class ConferenceService {
         } catch (NullPointerException e) {
             throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
+    }
+
+    // 새로운 아젠다만 가져오는 메소드 추가
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> readAgenda(LocalDate date) {
+        Conference conf = conferenceRepository.findByDate(date);
+        if (conf == null) {
+            log.warn("No conference found for date {}", date);
+            return ResponseEntity.noContent().build();
+        }
+
+        List<ReadAgendaResponseDto> agendaDtos = conf.getAgendaList().stream()
+                .map(Agenda::toResponseDto)
+                .collect(Collectors.toList());
+        log.info("Found {} agendas for date {}", agendaDtos.size(), date);
+        return ResponseEntity.ok(agendaDtos);
     }
 }

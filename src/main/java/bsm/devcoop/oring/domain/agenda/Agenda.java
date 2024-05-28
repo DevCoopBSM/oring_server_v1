@@ -1,5 +1,6 @@
 package bsm.devcoop.oring.domain.agenda;
 
+import bsm.devcoop.oring.domain.agenda.presentation.dto.ReadAgendaResponseDto;
 import bsm.devcoop.oring.domain.conference.Conference;
 import bsm.devcoop.oring.domain.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -59,5 +60,15 @@ public class Agenda {
     this.agendaContent = agendaContent;
     this.isPossible = isPossible;
     this.conference = conference; // 맵핑 중 one 으로 연결되는 필드 또한 빌드
+  }
+
+
+  // Agenda 엔티티를 ReadAgendaResponseDto로 변환하는 메소드
+  public ReadAgendaResponseDto toResponseDto() {
+      return new ReadAgendaResponseDto(
+          this.id.getAgendaNo(),
+          this.conference.getDate(),
+          this.agendaContent
+      );
   }
 }
