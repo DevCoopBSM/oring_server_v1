@@ -17,7 +17,7 @@ public class Vote {
   @EmbeddedId
   private VoteId voteId; // 복합 키, 엔티티와 다르게 선언한 후 클래스로 가져와야 한다
 
-  private short vote; // 찬성 Y or 반대 N / 안건 번호 1, 2, 3 ... , n
+  private char vote; // 찬성 Y or 반대 N / 안건 번호 1, 2, 3 ... , n
 
   private String reason; // 반대 이유 ( vote == 'N' 이라면 반드시 존재해야 한다 )
 
@@ -45,7 +45,7 @@ public class Vote {
   }
 
   @Builder
-  public Vote(VoteId voteId, short vote, String reason, Agenda agenda, User user) {
+  public Vote(VoteId voteId, char vote, String reason, Agenda agenda, User user) {
     this.voteId = voteId;
     this.vote = vote;
     this.reason = reason;

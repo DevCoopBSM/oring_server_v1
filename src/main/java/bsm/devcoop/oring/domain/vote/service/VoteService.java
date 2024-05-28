@@ -37,7 +37,7 @@ public class VoteService {
         LocalDate conferenceDate = LocalDate.of(2024, 5, 29);
         int agendaNo = requestDto.getAgendaNo();
         String stuNumber = requestDto.getStuNumber();
-        short voteCode = requestDto.getVote();
+        char voteCode = requestDto.getVote();
         String reason = requestDto.getReason();
 
         try {

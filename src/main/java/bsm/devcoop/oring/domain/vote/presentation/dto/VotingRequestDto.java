@@ -13,6 +13,6 @@ public class VotingRequestDto {
     private LocalDate conferenceDate;
     private int agendaNo;
     private String stuNumber;
-    private short vote;
+    private char vote;
     private String reason;
 }
