@@ -1,5 +1,7 @@
 package bsm.devcoop.oring.domain.vote.presentation;
 
+import bsm.devcoop.oring.domain.vote.presentation.dto.VoteResultRequest;
+import bsm.devcoop.oring.domain.vote.presentation.dto.VoteResultResponse;
 import bsm.devcoop.oring.domain.vote.presentation.dto.VotingRequestDto;
 import bsm.devcoop.oring.domain.vote.service.VoteService;
 import bsm.devcoop.oring.global.exception.GlobalException;
@@ -16,10 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class VoteController {
-  private final VoteService voteService;
+    private final VoteService voteService;
 
-  @PostMapping("/voting")
-  public ResponseEntity<?> voting(@RequestBody VotingRequestDto dto) throws GlobalException {
-    return voteService.voting(dto);
-  }
+    @PostMapping("/voting")
+    public ResponseEntity<?> voting(@RequestBody VotingRequestDto dto) throws GlobalException {
+        return voteService.voting(dto);
+    }
+
+    @PostMapping("/voteResult")
+    public ResponseEntity<VoteResultResponse> getVoteResult(@RequestBody VoteResultRequest request) throws GlobalException {
+        VoteResultResponse response = voteService.calculateVoteResult(request);
+        return ResponseEntity.ok(response);
+    }
 }

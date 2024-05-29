@@ -45,32 +45,29 @@ public class AgendaService {
                 .agendaNo(agendaNo)
                 .build();
 
-        Agenda agenda = agendaRepository.findById(agendaId)
+        return agendaRepository.findById(agendaId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
+    }
 
-        return agenda;
+    // ID로 안건 읽기
+    @Transactional(readOnly = true)
+    public Agenda readById(AgendaId id) throws GlobalException {
+        return agendaRepository.findById(id)
+                .orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
     }
 
     // 안건 만들기
     @Transactional
     public ResponseEntity<?> create(String token, MakeAgendaRequestDto requestDto) throws GlobalException {
         if(!checkToken(token)) {
-            // throw new GlobalException(ErrorCode.FORBIDDEN);
             return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
 
         int agendaNo = requestDto.getAgendaNo();
-        System.out.println("agendaNo = " + agendaNo);
-
         LocalDate conferenceDate = requestDto.getConferenceDate();
-        System.out.println("conferenceDate = " + conferenceDate);
-
         String agendaContent = requestDto.getAgendaContent();
-        System.out.println("agendaContent = " + agendaContent);
 
         Conference conference = conferenceRepository.findByDate(conferenceDate);
-        System.out.println("conference = " + conference);
-
         if (conference == null) {
             throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         } else if(agendaContent == null) {
@@ -81,7 +78,6 @@ public class AgendaService {
                 .agendaNo(agendaNo)
                 .conferenceId(conferenceDate)
                 .build();
-        System.out.println("agendaId = " + agendaId);
 
         if (agendaRepository.findById(agendaId).isPresent()) {
             throw new GlobalException(ErrorCode.DUPLICATE_DATA);
@@ -90,11 +86,11 @@ public class AgendaService {
         Agenda agenda = Agenda.builder()
                 .id(agendaId)
                 .agendaContent(agendaContent)
-                .isPossible('0') // default : 투표 불가능, 0
+                .isPossible('0')
+                .conference(conference)
                 .build();
 
-        conference.addAgenda(agenda);
-        conferenceRepository.save(conference);
+        agendaRepository.save(agenda);
 
         MakeAgendaResponseDto responseDto = MakeAgendaResponseDto.builder()
                 .agenda(agenda)
@@ -107,7 +103,6 @@ public class AgendaService {
     @Transactional
     public ResponseEntity<?> update(String token, UpdateAgendaRequestDto requestDto) throws GlobalException {
         if(!checkToken(token)) {
-            // throw new GlobalException(ErrorCode.FORBIDDEN);
             return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
 
@@ -120,11 +115,6 @@ public class AgendaService {
         }
 
         Agenda agenda = read(conferenceDate, agendaNo);
-
-        if (agenda == null) {
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
-        }
-
         agenda.setAgendaContent(newAgendaContent);
         agendaRepository.save(agenda);
 
@@ -139,30 +129,23 @@ public class AgendaService {
     @Transactional
     public ResponseEntity<?> delete(String token, LocalDate conferenceDate, int agendaNo) throws GlobalException {
         if(!checkToken(token)) {
-            // throw new GlobalException(ErrorCode.FORBIDDEN);
             return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
 
         Agenda agenda = read(conferenceDate, agendaNo);
-        if(agenda == null) {
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
-        }
-
         AgendaId agendaId = AgendaId.builder()
                 .conferenceId(conferenceDate)
                 .agendaNo(agendaNo)
                 .build();
 
         agendaRepository.deleteById(agendaId);
-
-        return ResponseEntity.ok(true); // 삭제된 후 ID는 어떻게 해야 하는가???
+        return ResponseEntity.ok(true);
     }
 
     // 투표 가능 여부 수정
     @Transactional
     public ResponseEntity<?> updateIsPossible(String token, UpdateIsPossibleRequestDto requestDto) throws GlobalException {
         if(!checkToken(token)) {
-            // throw new GlobalException(ErrorCode.FORBIDDEN);
             return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
 
@@ -170,11 +153,6 @@ public class AgendaService {
         int agendaNo = requestDto.getAgendaNo();
 
         Agenda agenda = read(conferenceDate, agendaNo);
-
-        if (agenda == null) {
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
-        }
-
         char isPossible = requestDto.getIsPossible();
 
         if(agenda.getIsPossible() == isPossible) {

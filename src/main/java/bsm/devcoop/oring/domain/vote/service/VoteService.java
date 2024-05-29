@@ -15,7 +15,6 @@ import bsm.devcoop.oring.domain.vote.repository.VoteRepository;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class VoteService {
     private final AgendaService agendaService;
     private final UserRepository userRepository;
@@ -44,33 +42,21 @@ public class VoteService {
 
         try {
             Agenda agenda = agendaService.read(conferenceDate, agendaNo);
-            System.out.println("Agenda fetched: " + agenda);
-            System.out.println("Agenda isPossible value: " + agenda.getIsPossible());
-
             User user = userRepository.findByStuNumber(stuNumber);
-            System.out.println("User fetched: " + user);
 
-            if (voteCode == 0 && reason == null) {
-                System.out.println("Reason is required when voting 'No'");
-                return ResponseEntity.notFound().build();
+            if (voteCode == 'N' && reason == null) {
+                return ResponseEntity.status(400).body("Reason is required when voting 'No'");
             } else if (agenda.getIsPossible() == '0') {
-                System.out.println("Agenda is not opened for voting");
                 return ResponseEntity.status(401).body("FORBIDDEN: AGENDA NOT OPENED");
             }
 
-            AgendaId agendaId = AgendaId.builder()
-                    .conferenceId(conferenceDate)
-                    .agendaNo(agendaNo)
-                    .build();
-
             VoteId voteId = VoteId.builder()
-                    .agendaId(agendaId)
+                    .agendaId(agenda.getId())
                     .studentId(stuNumber)
                     .build();
 
             // Check for duplicate vote
             if (voteRepository.existsById(voteId)) {
-                System.out.println("Duplicate vote detected for voteId: " + voteId);
                 return ResponseEntity.status(409).body(ErrorCode.DUPLICATE_DATA);
             }
 
@@ -88,25 +74,21 @@ public class VoteService {
                     .isSuccess(true)
                     .build();
 
-            System.out.println("Vote saved successfully: " + vote);
             return ResponseEntity.ok(responseDto);
 
         } catch (DataIntegrityViolationException e) {
-            System.out.println("Data integrity violation: " + e.getMessage());
             return ResponseEntity.status(409).body(ErrorCode.DUPLICATE_DATA);
         } catch (NullPointerException e) {
-            System.out.println("Null pointer exception: " + e.getMessage());
             return ResponseEntity.status(404).body(ErrorCode.DATA_NOT_FOUND);
         } catch(Exception e) {
-            System.out.println("Internal server error: " + e.getMessage());
             return ResponseEntity.status(500).body(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     // 투표 결과 계산
     @Transactional(readOnly = true)
-    public VoteResultResponse calculateVoteResult(VoteResultRequest request) {
-        Long agendaId = request.getAgendaId();
+    public VoteResultResponse calculateVoteResult(VoteResultRequest request) throws GlobalException {
+        AgendaId agendaId = new AgendaId(request.getAgendaNo(), request.getConferenceId());
         Agenda agenda = agendaService.readById(agendaId);
 
         List<Vote> votes = voteRepository.findByAgenda(agenda);
