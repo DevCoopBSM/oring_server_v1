@@ -11,6 +11,7 @@ import bsm.devcoop.oring.domain.vote.presentation.dto.VoteResultRequest;
 import bsm.devcoop.oring.domain.vote.presentation.dto.VoteResultResponse;
 import bsm.devcoop.oring.domain.vote.presentation.dto.VotingRequestDto;
 import bsm.devcoop.oring.domain.vote.presentation.dto.VotingResponseDto;
+import bsm.devcoop.oring.domain.vote.presentation.dto.DisagreeVoteResponse;
 import bsm.devcoop.oring.domain.vote.repository.VoteRepository;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -85,7 +87,6 @@ public class VoteService {
         }
     }
 
-    // 투표 결과 계산
     @Transactional(readOnly = true)
     public VoteResultResponse calculateVoteResult(VoteResultRequest request) throws GlobalException {
         AgendaId agendaId = new AgendaId(request.getAgendaNo(), request.getConferenceId());
@@ -99,10 +100,16 @@ public class VoteService {
         double agreePercentage = (totalVotes > 0) ? (agreeVotes * 100.0 / totalVotes) : 0;
         double disagreePercentage = (totalVotes > 0) ? (disagreeVotes * 100.0 / totalVotes) : 0;
 
+        List<DisagreeVoteResponse> disagreeVotesList = votes.stream()
+                .filter(vote -> vote.getVote() == 'N')
+                .map(vote -> new DisagreeVoteResponse(vote.getUser().getStuName(), vote.getReason(), vote.getVoteId().toString()))
+                .collect(Collectors.toList());
+
         return VoteResultResponse.builder()
                 .participants(totalVotes)
                 .agreePercentage(agreePercentage)
                 .disagreePercentage(disagreePercentage)
+                .disagreeVotes(disagreeVotesList)
                 .build();
     }
 }
