@@ -9,7 +9,7 @@ before_script:
 pull:
   stage: pull
   script:
-    docker-compose -p oring -f docker-compose.oring.yml down oring-back
+    - docker-compose -p oring -f docker-compose.oring.yml down oring-back
     - cd $PROJECT_PATH
     - git pull
   tags:
