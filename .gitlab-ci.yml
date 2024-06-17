@@ -12,12 +12,16 @@ pull:
     docker-compose -p oring -f docker-compose.oring.yml down oring-back
     - cd $PROJECT_PATH
     - git pull
+  tags:
+    - docker
 
 build:
   stage: build
   script:
     - cd $DOCKER_COMPOSE_PATH
     - docker-compose -p oring -f docker-compose.oring.yml build oring-back
+  tags:
+    - docker
 
 deploy:
   stage: deploy
@@ -26,3 +30,5 @@ deploy:
     - docker-compose -p oring -f docker-compose.oring.yml build oring-back
   only:
     - main
+  tags:
+    - docker
