@@ -4,23 +4,25 @@ stages:
   - deploy
 
 before_script:
-  - cd $PROJECT_PATH
+  - cd $DOCKER_COMPOSE_PATH
 
 pull:
   stage: pull
   script:
+    docker-compose -p oring -f docker-compose.oring.yml down oring-back
+    - cd $PROJECT_PATH
     - git pull
 
 build:
   stage: build
   script:
     - cd $DOCKER_COMPOSE_PATH
-    - docker-compose build oring-back
+    - docker-compose -p oring -f docker-compose.oring.yml build oring-back
 
 deploy:
   stage: deploy
   script:
     - cd $DOCKER_COMPOSE_PATH
-    - docker-compose up -d oring-back
+    - docker-compose -p oring -f docker-compose.oring.yml build oring-back
   only:
     - main
