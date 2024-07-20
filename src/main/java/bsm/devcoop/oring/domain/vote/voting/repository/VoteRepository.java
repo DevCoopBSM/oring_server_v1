@@ -1,8 +1,8 @@
-package bsm.devcoop.oring.domain.vote.repository;
+package bsm.devcoop.oring.domain.vote.voting.repository;
 
-import bsm.devcoop.oring.domain.agenda.Agenda;
-import bsm.devcoop.oring.domain.vote.Vote;
-import bsm.devcoop.oring.domain.vote.VoteId;
+import bsm.devcoop.oring.domain.vote.agenda.Agenda;
+import bsm.devcoop.oring.domain.vote.voting.Vote;
+import bsm.devcoop.oring.domain.vote.voting.VoteId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package bsm.devcoop.oring.domain.vote;
+package bsm.devcoop.oring.domain.vote.voting;
 
-import bsm.devcoop.oring.domain.agenda.Agenda;
-import bsm.devcoop.oring.domain.user.User;
+import bsm.devcoop.oring.domain.vote.agenda.Agenda;
+import bsm.devcoop.oring.domain.auth.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,8 +35,8 @@ public class Vote {
   }
 
   @ManyToOne(fetch = FetchType.LAZY) // one user -> many vote
-  @MapsId("studentId") // User 내 studentId와 연결
-  @JoinColumn(name = "stu_number")
+  @MapsId("userId") // VoteId 내 studentId와 연결
+  @JoinColumn(name = "user_code")
   @JsonBackReference // many 에게 붙는 어노테이션, 순환 루프 방지
   private User user;
 

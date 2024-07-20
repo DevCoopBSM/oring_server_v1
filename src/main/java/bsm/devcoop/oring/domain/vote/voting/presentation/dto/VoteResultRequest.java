@@ -1,4 +1,4 @@
-package bsm.devcoop.oring.domain.vote.presentation.dto;
+package bsm.devcoop.oring.domain.vote.voting.presentation.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

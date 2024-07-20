@@ -1,9 +1,9 @@
-package bsm.devcoop.oring.domain.vote.presentation;
+package bsm.devcoop.oring.domain.vote.voting.presentation;
 
-import bsm.devcoop.oring.domain.vote.presentation.dto.VoteResultRequest;
-import bsm.devcoop.oring.domain.vote.presentation.dto.VoteResultResponse;
-import bsm.devcoop.oring.domain.vote.presentation.dto.VotingRequestDto;
-import bsm.devcoop.oring.domain.vote.service.VoteService;
+import bsm.devcoop.oring.domain.vote.voting.presentation.dto.VoteResultRequest;
+import bsm.devcoop.oring.domain.vote.voting.presentation.dto.VoteResultResponse;
+import bsm.devcoop.oring.domain.vote.voting.presentation.dto.VotingRequestDto;
+import bsm.devcoop.oring.domain.vote.voting.service.VoteService;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
