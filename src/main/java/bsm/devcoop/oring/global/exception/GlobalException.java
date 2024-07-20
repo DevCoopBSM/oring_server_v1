@@ -8,4 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GlobalException extends Throwable {
     private final ErrorCode errorCode;
+    private final String message;
 }

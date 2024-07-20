@@ -1,27 +1,33 @@
 package bsm.devcoop.oring.domain.user;
 
-import bsm.devcoop.oring.domain.vote.Vote;
+import bsm.devcoop.oring.domain.user.types.Role;
+import bsm.devcoop.oring.domain.vote.voting.Vote;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "oring_user")
+@Table
+@Data
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
   @Id
-  private String stuNumber;
+  private String userCode; // 사용자 바코드
 
-  private String stuCode;
+  private Long userId;
+  private String userName; // 사용자 이름
+  private String email;
+  private String password;
+  private int point;
+  private String pin;
+  private String authCode; // 사용자 인증 코드
 
-  private String stuName;
+  @Enumerated(EnumType.STRING)
+  private Role roles;
 
   @OneToMany(
     mappedBy = "user",
@@ -37,9 +43,19 @@ public class User {
   }
 
   @Builder
-  public User(String stuNumber, String stuCode, String stuName) {
-    this.stuNumber = stuNumber;
-    this.stuCode = stuCode;
-    this.stuName = stuName;
+  public User(
+          String userCode, Long userId, String userName,
+          String email, String password, int point,
+          String pin, String authCode, Role roles
+  ) {
+    this.userCode = userCode;
+    this.userId = userId;
+    this.userName = userName;
+    this.email = email;
+    this.password = password;
+    this.point = point;
+    this.pin = pin;
+    this.authCode = authCode;
+    this.roles = roles;
   }
 }
