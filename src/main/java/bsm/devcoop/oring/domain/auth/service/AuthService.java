@@ -1,11 +1,12 @@
 package bsm.devcoop.oring.domain.auth.service;
 
 import bsm.devcoop.oring.domain.auth.User;
-import bsm.devcoop.oring.domain.auth.presentation.dto.PwChangeReq;
-import bsm.devcoop.oring.domain.auth.presentation.dto.PwChangeRes;
+import bsm.devcoop.oring.domain.auth.presentation.dto.PwChangeRequest;
+import bsm.devcoop.oring.domain.auth.presentation.dto.PwChangeResponse;
 import bsm.devcoop.oring.domain.auth.repository.UserRepository;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
+import bsm.devcoop.oring.global.utils.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,61 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Transactional
-    public ResponseEntity<?> pwChange(PwChangeReq request) throws GlobalException {
+    public User saveUser(User user) {
+        long userId = userRepository.count() + 1;
+
+        user.createUserId(userId);
+
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User existsUser(String userCode) throws GlobalException {
+        try {
+            return userRepository.existsByUserCode(userCode);
+        } catch (Exception e) {
+            throw new GlobalException(ErrorCode.Conflict, "Already exists User");
+        }
+    }
+
+    @Transactional
+    public String encodePassword(String password) {
+        log.info("Encode new Password : {}", password);
+        return bCryptPasswordEncoder.encode(password);
+    }
+
+    @Transactional
+    public User getUserFromHeader(String header) throws GlobalException {
+        log.info("Get Email from Header");
+
+        String token = header.substring(7); // "Bearer " 이후의 토큰 부분만 가져옵니다.
+        log.info("Token : {}", token);
+
+        // 토큰이 만료되었을 경우, 검사 없이 지나간다
+        if (jwtUtil.isExpired(token)) {
+            log.warn("Expired token");
+            throw new GlobalException(ErrorCode.Bad_Request, "Expired Token");
+        }
+
+        // 토큰에서 email 추출
+        String email = jwtUtil.getEmail(token);
+        
+        // email 로 유저 정보 찾기
+        return userRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public String createVoteJwt(String userName) throws GlobalException {
+        log.info("Create JWT by userName : {}", userName);
+
+        return jwtUtil.createVoteAuthorizationJwt(userName);
+    }
+
+    @Transactional
+    public ResponseEntity<?> pwChange(PwChangeRequest request) throws GlobalException {
         log.info("Password Change Started");
 
         String email = request.getEmail();
@@ -57,17 +110,11 @@ public class AuthService {
             throw new GlobalException(ErrorCode.Internal_Server_Error, "Error during change password");
         }
 
-        PwChangeRes response = PwChangeRes.builder()
+        PwChangeResponse response = PwChangeResponse.builder()
                 .status(200)
                 .message("Password Change Success")
                 .build();
 
         return ResponseEntity.ok().body(response);
     }
-
-    // 해야 할 일 : 비즈니스 로직과 데이터 다루는 작업 ( Controller / Service ) 을 분리할 것
-    // 현재 너무나도 많은 로직이 Service 로 치우쳐져 있다.
-
-//    @Transactional
-//    public ResponseEntity<?> createAuthVoteToken()
 }

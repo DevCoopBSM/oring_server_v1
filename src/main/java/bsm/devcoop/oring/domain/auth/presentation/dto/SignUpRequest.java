@@ -1,14 +1,14 @@
 package bsm.devcoop.oring.domain.auth.presentation.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
-public class PwChangeReq {
+public class SignUpRequest {
+    private String userCode;
+    private String userName;
     private String email;
     private String password;
-    private String newPassword;
+    private String userType;
 }

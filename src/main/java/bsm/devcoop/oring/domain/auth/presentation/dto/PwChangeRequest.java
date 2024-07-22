@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthReq {
-    private String stuCode;
+public class PwChangeRequest {
+    private String email;
+    private String password;
+    private String newPassword;
 }

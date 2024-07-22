@@ -1,4 +1,4 @@
-package bsm.devcoop.oring.domain.user.presentation.dto;
+package bsm.devcoop.oring.domain.auth.presentation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 @Getter
 @AllArgsConstructor
-public class AuthResponseDto {
-    private String stuNumber;
+public class SignUpResponse {
+    private int status;
     private String stuName;
 }

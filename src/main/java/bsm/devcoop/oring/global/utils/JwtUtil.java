@@ -44,6 +44,22 @@ public class JwtUtil {
                 .compact();
     }
 
+    // Vote 인증용 발급하는 Authorization JWT
+    public String createVoteAuthorizationJwt(String userName) {
+        log.info("Create JWT Started with secretKey : {}", secretKey);
+
+        Claims claims = Jwts.claims();
+        claims.put("userName", userName);
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + exprTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getEmail(token));
 
@@ -74,6 +90,20 @@ public class JwtUtil {
                     .get("roles", String.class);
         } catch (Exception e) {
             log.error("Error getting roles from token : {}", token, e);
+            return null;
+        }
+    }
+
+    public String getUserCode(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("userCode", String.class);
+        } catch (Exception e) {
+            log.error("Error getting userCode from token : {}", token, e);
             return null;
         }
     }

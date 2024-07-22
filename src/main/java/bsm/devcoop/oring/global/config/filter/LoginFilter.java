@@ -1,6 +1,6 @@
 package bsm.devcoop.oring.global.config.filter;
 
-import bsm.devcoop.oring.domain.user.CustomUserDetails;
+import bsm.devcoop.oring.domain.auth.CustomUserDetails;
 import bsm.devcoop.oring.global.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -75,16 +75,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 
         // 사용자 정보 ( email, role ) 추출
-        String email = customUserDetails.getUsername();
+        String email = customUserDetails.getEmail();
         String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
 
         log.info("Generating token for user : {} with role : {}", email, role);
 
         // 토큰 생성 후 헤더에 추가
-        String token = customUserDetails.getUsername();
+        String token = jwtUtil.createAuthorizationJwt(email, role);
         log.info("Generated Token : {}", token);
 
-        response.addHeader("Authorization", "bearer " + token);
+        response.addHeader("Authorization", "Bearer " + token);
         log.info("Added token to response header");
     }
 

@@ -58,6 +58,9 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(
                     auth -> auth
+                            .requestMatchers("/auth/signUp").permitAll()
+                            .requestMatchers("/auth/pwChange").authenticated()
+                            .requestMatchers("/auth/token").authenticated()
                             .requestMatchers("/vote/voting").permitAll()
                             .anyRequest().authenticated()
             )

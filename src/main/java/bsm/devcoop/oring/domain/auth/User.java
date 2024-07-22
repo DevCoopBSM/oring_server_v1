@@ -59,6 +59,10 @@ public class User {
     voteList.add(vote);
   }
 
+  public void createUserId(long userId) {
+    this.userId = userId;
+  }
+
   public void changePassword(String password) {
     this.password = password;
   }

@@ -30,7 +30,7 @@ public class ConferenceService {
     private final ConferenceRepository conferenceRepository;
     private final AgendaRepository agendaRepository; 
 
-    @Value("${my.token}")
+    @Value("${jwt.secret}")
     private String tokenKey;
 
     Boolean checkToken(String token) {
@@ -41,7 +41,7 @@ public class ConferenceService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> readConf(String token, LocalDate date) {
         if (!checkToken(token)) {
-            return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
+            return ResponseEntity.status(401).body(ErrorCode.Forbidden);
         }
         Conference conf = conferenceRepository.findByDate(date);
         if (conf == null) {
@@ -59,12 +59,12 @@ public class ConferenceService {
     @Transactional
     public ResponseEntity<?> create(String token, MakeConfRequestDto requestDto) throws GlobalException {
         if (!checkToken(token)) {
-            return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
+            return ResponseEntity.status(401).body(ErrorCode.Forbidden);
         }
         LocalDate date = requestDto.getDate();
 
         if (date == null) {
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+            throw new GlobalException(ErrorCode.Bad_Request, "Null Data");
         }
 
         try {
@@ -82,7 +82,7 @@ public class ConferenceService {
 
             return ResponseEntity.ok(response);
         } catch (NullPointerException e) {
-            throw new GlobalException(ErrorCode.DUPLICATE_DATA);
+            throw new GlobalException(ErrorCode.Conflict, "");
         }
     }
 
@@ -102,7 +102,7 @@ public class ConferenceService {
 
             return ResponseEntity.ok(responseDto);
         } catch (NullPointerException e) {
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+            throw  new GlobalException(ErrorCode.Not_Found, "");
         }
     }
 

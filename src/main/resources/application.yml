@@ -5,19 +5,20 @@ spring:
     name: oring_server
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true&requireSSL=true&verifyServerCertificate=false
-    password: ${DB_PASSWORD}
-    username: ${DB_USERNAME}
+    url: jdbc:mysql://${DB_HOST}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
+    password: ${DB_PW}
+    username: ${DB_ID}
   jpa:
     hibernate:
-      ddl-auto: none
-    generate-ddl: false
+      ddl-auto: update
+    generate-ddl: true
   main:
     allow-bean-definition-overriding: true
-
-my:
-  token: ${MY_SECRET_KEY}
 
 server:
   servlet:
     context-path: /api
+
+jwt:
+  secret: ${JWT_KEY}
+  expiration: 3600000 # 30 minutes in milliseconds

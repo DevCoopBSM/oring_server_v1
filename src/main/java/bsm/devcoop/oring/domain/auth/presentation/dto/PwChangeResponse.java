@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class PwChangeRes {
+public class PwChangeResponse {
     private int status;
     private String message;
 }
