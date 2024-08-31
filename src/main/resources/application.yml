@@ -5,7 +5,7 @@ spring:
     name: oring_server
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://${DB_MASTER_HOST}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true&requireSSL=true
     password: ${DB_PASSWORD}
     username: ${DB_USERNAME}
   jpa:
