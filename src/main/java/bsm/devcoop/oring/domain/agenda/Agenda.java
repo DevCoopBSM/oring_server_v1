@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "oring_agenda")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Agenda {

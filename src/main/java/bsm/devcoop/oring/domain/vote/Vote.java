@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "oring_vode")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote {
