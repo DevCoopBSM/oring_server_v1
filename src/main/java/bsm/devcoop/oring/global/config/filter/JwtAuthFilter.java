@@ -1,8 +1,8 @@
 package bsm.devcoop.oring.global.config.filter;
 
-import bsm.devcoop.oring.domain.auth.CustomUserDetails;
-import bsm.devcoop.oring.domain.auth.User;
-import bsm.devcoop.oring.domain.auth.types.Role;
+import bsm.devcoop.oring.domain.account.CustomUserDetails;
+import bsm.devcoop.oring.domain.account.User;
+import bsm.devcoop.oring.domain.account.types.Role;
 import bsm.devcoop.oring.global.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -47,18 +48,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         // 토큰에서 사용자 정보 추출
-        String email = jwtUtil.getEmail(token);
+        String email = jwtUtil.getUserEmail(token);
         Role role = Role.valueOf(jwtUtil.getRoles(token));
 
         // 사용자 정보로 User 객체 생성
         User user = User.builder()
-                .email(email)
-                .password("")
+                .userEmail(email)
+                .userPassword("")
                 .roles(role)
                 .build();
 
         // UserDetails 객체 생성
-        CustomUserDetails userDetails = new CustomUserDetails(user);
+        CustomUserDetails userDetails = new CustomUserDetails(user, new BCryptPasswordEncoder());
         Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
         // SecurityContextHolder 에 인증 정보 설정

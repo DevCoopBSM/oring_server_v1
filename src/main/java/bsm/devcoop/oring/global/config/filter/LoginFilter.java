@@ -1,6 +1,7 @@
 package bsm.devcoop.oring.global.config.filter;
 
-import bsm.devcoop.oring.domain.auth.CustomUserDetails;
+import bsm.devcoop.oring.domain.account.CustomUserDetails;
+import bsm.devcoop.oring.domain.account.types.Role;
 import bsm.devcoop.oring.global.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -36,24 +37,24 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("LoginFilter attemptAuthentication started");
 
-        // 요청 ( request ) 으로부터 사용자 정보 추출 후
-
         Map<String, String> loginRequest;
 
         try {
             loginRequest = objectMapper.readValue(request.getInputStream(), Map.class);
         } catch (Exception e) {
-            log.error("Error reading value from loginRequest");
-            throw new RuntimeException(e);
+            log.error("Error parsing LoginRequest : {}", e.getMessage());
+            throw new RuntimeException("Invalid LoginRequest Data", e);
         }
 
-        String email = loginRequest.get("email");
-        String password = loginRequest.get("password");
+        String userEmail = loginRequest.get("userEmail");
+        String userPassword = loginRequest.get("userPassword");
 
-        log.info("Received Email : {}", email);
-        log.info("Received Password : {}", password);
+        if (userEmail == null || userPassword == null) {
+            log.error("UserEmail or UserPassword is missing in LoginRequest");
+            throw new RuntimeException("UserEmail or UserPassword is missing");
+        }
 
-        // 사용자 인증을 위한 토큰 생성 후 Manager 에게 인증 요청
+        log.info("Received UserEmail : {}", userEmail);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
 
@@ -74,14 +75,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 
-        // 사용자 정보 ( email, role ) 추출
-        String email = customUserDetails.getEmail();
-        String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
+        // 초기 비밀번호라면? 인증 로직으로 리다이렉트
+        if (customUserDetails.isInitialUserPassword()) {
+            log.warn("User's Password is initialPassword!");
 
-        log.info("Generating token for user : {} with role : {}", email, role);
+            // response.sendRedirect("https://");
+            return ;
+        }
 
-        // 토큰 생성 후 헤더에 추가
-        String token = jwtUtil.createAuthorizationJwt(email, role);
+        // 반환할 사용자 정보 추출 후 정리
+        String userEmail = customUserDetails.getUserEmail();
+        String userName = customUserDetails.getUsername();
+        String userCode = customUserDetails.getUserCode();
+        int userPoint = customUserDetails.getUserPoint();
+        Role roles = customUserDetails.getRole();
+
+        log.info("Generating token for user : {} with role : {}", userEmail, roles);
+
+        // JWT 토큰 생성
+        String token = jwtUtil.createAuthorizationJwt(userEmail, roles.name());
         log.info("Generated Token : {}", token);
 
         response.addHeader("Authorization", "Bearer " + token);
@@ -90,7 +102,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        log.info("LoginFilter unsuccessfulAuthentication");
+        log.info("LoginFilter unsuccessfulAuthentication : {}", failed.getMessage());
 
         /*
         사용자 인증에 실패 ( 로그인 실패 )
@@ -98,5 +110,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         */
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(Map.of("error", "Authentication failed", "message", failed.getMessage())));
     }
 }

@@ -59,8 +59,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(
                     auth -> auth
                             .requestMatchers("/auth/signUp").permitAll()
-                            .requestMatchers("/auth/pwChange").authenticated()
-                            .requestMatchers("/auth/token").authenticated()
+                            .requestMatchers("/auth/**").authenticated()
+                            .requestMatchers("/item/**").permitAll()
+                            .requestMatchers("/chat/**").permitAll()
                             .requestMatchers("/vote/voting").permitAll()
                             .anyRequest().authenticated()
             )

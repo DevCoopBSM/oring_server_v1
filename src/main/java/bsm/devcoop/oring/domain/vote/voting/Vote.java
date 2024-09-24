@@ -1,7 +1,7 @@
 package bsm.devcoop.oring.domain.vote.voting;
 
 import bsm.devcoop.oring.domain.vote.agenda.Agenda;
-import bsm.devcoop.oring.domain.auth.User;
+import bsm.devcoop.oring.domain.account.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

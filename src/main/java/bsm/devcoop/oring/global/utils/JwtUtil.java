@@ -29,19 +29,22 @@ public class JwtUtil {
 
     // Login 인증 후 사용되는 Authorization JWT
     public String createAuthorizationJwt(String email, String roles) {
-        log.info("Create JWT Started with secretKey : {}", secretKey);
+        log.info("Create JWT Started");
 
         Claims claims = Jwts.claims();
-        claims.put("email", email);
+        claims.put("userEmail", email);
         claims.put("roles", roles);
         Date now = new Date();
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + exprTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+
+        log.info("Generated Token : {}", token);
+        return token;
     }
 
     // Vote 인증용 발급하는 Authorization JWT
@@ -61,19 +64,19 @@ public class JwtUtil {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getEmail(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    public String getEmail(String token) {
+    public String getUserEmail(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody()
-                    .get("email", String.class);
+                    .get("userEmail", String.class);
         } catch (Exception e) {
             log.error("Error getting email from token : {}", token, e);
             return null;
