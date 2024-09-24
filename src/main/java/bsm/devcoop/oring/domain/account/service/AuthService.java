@@ -37,7 +37,7 @@ public class AuthService {
     public User getUserByEmail(String email) throws GlobalException {
         User user = userRepository.findByUserEmail(email);
         if (user == null) {
-            throw new GlobalException(ErrorCode.Not_Found, "사용자를 찾을 수 없습니다.")
+            throw new GlobalException(ErrorCode.Not_Found, "사용자를 찾을 수 없습니다.");
         }
         return user;
     }
