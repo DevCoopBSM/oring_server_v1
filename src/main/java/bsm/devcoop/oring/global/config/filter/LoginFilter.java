@@ -1,6 +1,7 @@
 package bsm.devcoop.oring.global.config.filter;
 
 import bsm.devcoop.oring.domain.account.CustomUserDetails;
+import bsm.devcoop.oring.domain.account.presentation.dto.LoginDto;
 import bsm.devcoop.oring.domain.account.types.Role;
 import bsm.devcoop.oring.global.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -98,6 +99,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader("Authorization", "Bearer " + token);
         log.info("Added token to response header");
+
+        // 응답 본문에 사용자 정보와 토큰 추가
+        LoginDto.Response responseBody = LoginDto.Response.builder()
+                .userCode(userCode)
+                .userName(userName)
+                .userEmail(userEmail)
+                .userPoint(userPoint)
+                .roles(roles.name())
+                .build();
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+
+        log.info("Added responseDto to body");
     }
 
     @Override
