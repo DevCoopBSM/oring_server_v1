@@ -69,19 +69,27 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             throws IOException, ServletException {
         log.info("LoginFilter successfulAuthentication");
 
-        /*
-        사용자 인증에 성공 ( 로그인 성공 )
-        -> 사용자 정보를 추출하여 토큰 발급 후 로그인 처리
-        */
-
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 
         // 초기 비밀번호라면? 인증 로직으로 리다이렉트
         if (customUserDetails.isInitialUserPassword()) {
             log.warn("User's Password is initialPassword!");
+            /*
 
-            // response.sendRedirect("https://");
-            return ;
+            LoginDto.RedirectResponse responseBody = LoginDto.RedirectResponse.builder()
+                    .success(false)
+                    .status("REDIRECT")
+                    .redirectUrl("/pwchange")
+                    .build();
+
+            response.setStatus(HttpStatus.OK.value());
+            response.setContentType("application/json");
+            response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+
+            log.info("Sending redirect info to client");
+
+             */
+            return;
         }
 
         // 반환할 사용자 정보 추출 후 정리
@@ -97,11 +105,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createAuthorizationJwt(userEmail, roles.name());
         log.info("Generated Token : {}", token);
 
+        // 응답 헤더에 WJT 토큰 추가
         response.addHeader("Authorization", "Bearer " + token);
         log.info("Added token to response header");
 
         // 응답 본문에 사용자 정보와 토큰 추가
         LoginDto.Response responseBody = LoginDto.Response.builder()
+                .success(true)
                 .userCode(userCode)
                 .userName(userName)
                 .userEmail(userEmail)
@@ -117,17 +127,22 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
+            throws IOException, ServletException {
         log.info("LoginFilter unsuccessfulAuthentication : {}", failed.getMessage());
-
-        /*
-        사용자 인증에 실패 ( 로그인 실패 )
-        -> 인증 실패 status 처리
-        */
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(Map.of("error", "Authentication failed", "message", failed.getMessage())));
+
+        LoginDto.UnsuccessfulResponse responseBody = LoginDto.UnsuccessfulResponse.builder()
+                .success(false)
+                .error("인증 실패")
+                .message("아이디와 비밀번호를 확인해주세요.")
+                .build();
+
+        log.info("Return UnsuccessfulResponse to body");
+
+        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
     }
 }

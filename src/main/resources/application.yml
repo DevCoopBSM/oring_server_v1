@@ -10,8 +10,13 @@ spring:
     username: ${DB_ID}
   jpa:
     hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: none
-    generate-ddl: true
+    generate-ddl: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
   main:
     allow-bean-definition-overriding: true
 

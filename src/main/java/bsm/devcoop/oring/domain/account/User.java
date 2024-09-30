@@ -9,10 +9,12 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Entity
-@Table(name = "oring_user")
+@Table(name = "common_user")
 @Data
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
   @Id
@@ -20,7 +22,13 @@ public class User {
 
   private String userCode; // 학생증 바코드
 
+  private String userCiNumber; // 유저 CI 정보
+
   private String userName; // 유저 이름
+
+  private String userAddress; // 유저 주소
+
+  private String userPhone; // 유저 전화번호
 
   private String userEmail; // 유저 이메일
 
@@ -33,7 +41,9 @@ public class User {
   private String userFingerPrint; // 유저 지문 정보
 
   @Enumerated(EnumType.STRING)
-  private Role roles;
+  private Role roles; // 사용자 인증용 Role, == userType
+
+  // 연관 관계 맵핑
 
   @OneToMany(
     mappedBy = "user",
@@ -42,23 +52,6 @@ public class User {
   ) // user 라는 컬럼명으로 Vote 내 연관 관계 맵핑 ( 1: N 중 1 )
   @JsonManagedReference // JSON 객체로 변환 시 1 : N 중 1에게 부여
   private List<Vote> voteList = new ArrayList<>();
-
-  @Builder
-  public User(
-          String userNumber, String userCode, String userName,
-          String userEmail, String userPassword, String userPin,
-          int userPoint, String userFingerPrint, Role roles
-  ) {
-    this.userNumber = userNumber;
-    this.userCode = userCode;
-    this.userName = userName;
-    this.userEmail = userEmail;
-    this.userPassword = userPassword;
-    this.userPin = userPin;
-    this.userPoint = userPoint;
-    this.userFingerPrint = userFingerPrint;
-    this.roles = roles;
-  }
 
   public void addVote(Vote vote) {
     vote.setUser(this);
