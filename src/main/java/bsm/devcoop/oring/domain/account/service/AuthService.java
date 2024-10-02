@@ -1,9 +1,9 @@
 package bsm.devcoop.oring.domain.account.service;
 
-import bsm.devcoop.oring.domain.account.User;
-import bsm.devcoop.oring.domain.account.repository.UserRepository;
-import bsm.devcoop.oring.domain.account.student.Student;
-import bsm.devcoop.oring.domain.account.student.repository.StudentRepository;
+import bsm.devcoop.oring.entity.account.user.User;
+import bsm.devcoop.oring.entity.account.user.repository.UserRepository;
+import bsm.devcoop.oring.entity.account.student.Student;
+import bsm.devcoop.oring.entity.account.student.repository.StudentRepository;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
 import bsm.devcoop.oring.global.utils.JwtUtil;
@@ -37,7 +37,7 @@ public class AuthService {
     public User getUserByEmail(String email) throws GlobalException {
         User user = userRepository.findByUserEmail(email);
         if (user == null) {
-            throw new GlobalException(ErrorCode.Not_Found, "사용자를 찾을 수 없습니다.");
+            throw new GlobalException(ErrorCode.NOT_FOUND, "사용자를 찾을 수 없습니다.");
         }
         return user;
     }
@@ -45,7 +45,7 @@ public class AuthService {
     @Transactional
     public String getUserEmailByJwt(String jwtToken) throws GlobalException {
         if (jwtUtil.isExpired(jwtToken)) {
-            throw new GlobalException(ErrorCode.Bad_Request, "만료된 혹은 유효하지 않은 토큰입니다.");
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "만료된 혹은 유효하지 않은 토큰입니다.");
         }
 
         return jwtUtil.getUserEmail(jwtToken);
@@ -55,7 +55,7 @@ public class AuthService {
     public Student getStudentByEmail(String email) throws GlobalException {
         Student student = studentRepository.findByStuEmail(email);
         if (student == null) {
-            throw new GlobalException(ErrorCode.Not_Found, "학생을 찾을 수 없습니다.");
+            throw new GlobalException(ErrorCode.NOT_FOUND, "학생을 찾을 수 없습니다.");
         }
         return student;
     }
@@ -80,7 +80,7 @@ public class AuthService {
         // 토큰이 만료되었을 경우, 검사 없이 지나간다
         if (jwtUtil.isExpired(token)) {
             log.warn("Expired token");
-            throw new GlobalException(ErrorCode.Bad_Request, "Expired Token");
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "Expired Token");
         }
 
         // 토큰에서 email 추출

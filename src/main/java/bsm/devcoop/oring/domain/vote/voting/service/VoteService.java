@@ -1,13 +1,13 @@
 package bsm.devcoop.oring.domain.vote.voting.service;
 
-import bsm.devcoop.oring.domain.vote.agenda.Agenda;
-import bsm.devcoop.oring.domain.vote.agenda.AgendaId;
+import bsm.devcoop.oring.entity.vote.agenda.Agenda;
+import bsm.devcoop.oring.entity.vote.agenda.AgendaId;
 import bsm.devcoop.oring.domain.vote.agenda.service.AgendaService;
-import bsm.devcoop.oring.domain.account.User;
-import bsm.devcoop.oring.domain.account.repository.UserRepository;
-import bsm.devcoop.oring.domain.vote.voting.Vote;
-import bsm.devcoop.oring.domain.vote.voting.VoteId;
-import bsm.devcoop.oring.domain.vote.voting.repository.VoteRepository;
+import bsm.devcoop.oring.entity.account.user.User;
+import bsm.devcoop.oring.entity.account.user.repository.UserRepository;
+import bsm.devcoop.oring.entity.vote.voting.Vote;
+import bsm.devcoop.oring.entity.vote.voting.VoteId;
+import bsm.devcoop.oring.entity.vote.voting.repository.VoteRepository;
 import bsm.devcoop.oring.domain.vote.voting.presentation.dto.VoteResultRequest;
 import bsm.devcoop.oring.domain.vote.voting.presentation.dto.VoteResultResponse;
 import bsm.devcoop.oring.domain.vote.voting.presentation.dto.VotingRequestDto;
@@ -81,7 +81,7 @@ public class VoteService {
 
             // 저장 전, 투표 정보 중복 여부 확인 
             if (voteRepository.existsById(voteId)) {
-                return ResponseEntity.status(409).body(ErrorCode.Conflict);
+                return ResponseEntity.status(409).body(ErrorCode.CONFLICT);
             }
 
             Vote voteData = Vote.builder()
@@ -101,11 +101,11 @@ public class VoteService {
             return ResponseEntity.ok(responseDto);
 
         } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(409).body(ErrorCode.Conflict);
+            return ResponseEntity.status(409).body(ErrorCode.CONFLICT);
         } catch (NullPointerException e) {
-            return ResponseEntity.status(404).body(ErrorCode.Not_Found);
+            return ResponseEntity.status(404).body(ErrorCode.NOT_FOUND);
         } catch(Exception e) {
-            return ResponseEntity.status(500).body(ErrorCode.Internal_Server_Error);
+            return ResponseEntity.status(500).body(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 

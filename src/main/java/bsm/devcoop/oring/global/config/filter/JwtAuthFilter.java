@@ -1,8 +1,8 @@
 package bsm.devcoop.oring.global.config.filter;
 
-import bsm.devcoop.oring.domain.account.CustomUserDetails;
-import bsm.devcoop.oring.domain.account.User;
-import bsm.devcoop.oring.domain.account.types.Role;
+import bsm.devcoop.oring.entity.account.user.CustomUserDetails;
+import bsm.devcoop.oring.entity.account.user.User;
+import bsm.devcoop.oring.entity.account.user.types.Role;
 import bsm.devcoop.oring.global.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

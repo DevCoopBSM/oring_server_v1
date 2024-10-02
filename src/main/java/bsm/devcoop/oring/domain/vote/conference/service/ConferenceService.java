@@ -1,16 +1,16 @@
 package bsm.devcoop.oring.domain.vote.conference.service;
 
-import bsm.devcoop.oring.domain.vote.conference.Conference;
+import bsm.devcoop.oring.entity.vote.conference.Conference;
 import bsm.devcoop.oring.domain.vote.conference.presentation.dto.MakeConfRequestDto;
 import bsm.devcoop.oring.domain.vote.conference.presentation.dto.MakeConfResponseDto;
 import bsm.devcoop.oring.domain.vote.conference.presentation.dto.ReadConfResponseDto;
 import bsm.devcoop.oring.domain.vote.conference.presentation.dto.ReadFileResponseDto;
-import bsm.devcoop.oring.domain.vote.conference.repository.ConferenceRepository;
+import bsm.devcoop.oring.entity.vote.conference.repository.ConferenceRepository;
 import bsm.devcoop.oring.domain.vote.agenda.presentation.dto.ReadAgendaResponseDto;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
-import bsm.devcoop.oring.domain.vote.agenda.Agenda;
-import bsm.devcoop.oring.domain.vote.agenda.repository.AgendaRepository;
+import bsm.devcoop.oring.entity.vote.agenda.Agenda;
+import bsm.devcoop.oring.entity.vote.agenda.repository.AgendaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +41,7 @@ public class ConferenceService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> readConf(String token, LocalDate date) {
         if (!checkToken(token)) {
-            return ResponseEntity.status(401).body(ErrorCode.Forbidden);
+            return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
         Conference conf = conferenceRepository.findByDate(date);
         if (conf == null) {
@@ -59,12 +59,12 @@ public class ConferenceService {
     @Transactional
     public ResponseEntity<?> create(String token, MakeConfRequestDto requestDto) throws GlobalException {
         if (!checkToken(token)) {
-            return ResponseEntity.status(401).body(ErrorCode.Forbidden);
+            return ResponseEntity.status(401).body(ErrorCode.FORBIDDEN);
         }
         LocalDate date = requestDto.getDate();
 
         if (date == null) {
-            throw new GlobalException(ErrorCode.Bad_Request, "Null Data");
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "Null Data");
         }
 
         try {
@@ -82,7 +82,7 @@ public class ConferenceService {
 
             return ResponseEntity.ok(response);
         } catch (NullPointerException e) {
-            throw new GlobalException(ErrorCode.Conflict, "");
+            throw new GlobalException(ErrorCode.CONFLICT, "");
         }
     }
 
@@ -102,7 +102,7 @@ public class ConferenceService {
 
             return ResponseEntity.ok(responseDto);
         } catch (NullPointerException e) {
-            throw  new GlobalException(ErrorCode.Not_Found, "");
+            throw  new GlobalException(ErrorCode.NOT_FOUND, "");
         }
     }
 

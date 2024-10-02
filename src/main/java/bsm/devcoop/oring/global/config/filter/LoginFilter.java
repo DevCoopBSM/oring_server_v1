@@ -1,8 +1,8 @@
 package bsm.devcoop.oring.global.config.filter;
 
-import bsm.devcoop.oring.domain.account.CustomUserDetails;
+import bsm.devcoop.oring.entity.account.user.CustomUserDetails;
 import bsm.devcoop.oring.domain.account.presentation.dto.LoginDto;
-import bsm.devcoop.oring.domain.account.types.Role;
+import bsm.devcoop.oring.entity.account.user.types.Role;
 import bsm.devcoop.oring.global.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;

@@ -1,0 +1,67 @@
+package bsm.devcoop.oring.entity.occount.transaction.charge;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "occount_chargeLog")
+@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ChargeLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long chargeId;
+
+    @Column(length = 255)
+    private String userCode;  // 유저 코드 (바코드 혹은 전화번호)
+
+    private LocalDateTime chargeDate; // 충전 날짜
+
+    @Column(columnDefinition = "text")
+    private String chargeType; // 충전 타입
+
+    private Integer beforePoint; // 충전 전 포인트
+
+    private int chargedPoint; // 충전한 포인트
+
+    private int afterPoint; // 충전 후 포인트
+
+    @Column(length = 255)
+    private String managedEmail; // 담당 매점부 이메일
+
+    @Column(length = 255, columnDefinition = "varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
+    private String paymentId; // PG 거래 번호
+
+    @Column(columnDefinition = "text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
+    private String refundState; // 환불 상태
+
+    private LocalDateTime refundDate; // 환불 완료 날짜
+
+    @Column(columnDefinition = "text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
+    private String refundRequesterId; // 환불 신청 아이디
+
+    @Builder
+    public ChargeLog(
+            String userCode, LocalDateTime chargeDate,
+            String chargeType, Integer beforePoint, int chargedPoint,
+            int afterPoint, String managedEmail, String paymentId,
+            String refundState, LocalDateTime refundDate, String refundRequesterId
+    ) {
+        this.userCode = userCode;
+        this.chargeDate = chargeDate;
+        this.chargeType = chargeType;
+        this.beforePoint = beforePoint;
+        this.chargedPoint = chargedPoint;
+        this.afterPoint = afterPoint;
+        this.managedEmail = managedEmail;
+        this.paymentId = paymentId;
+        this.refundState = refundState;
+        this.refundDate = refundDate;
+        this.refundRequesterId = refundRequesterId;
+    }
+}

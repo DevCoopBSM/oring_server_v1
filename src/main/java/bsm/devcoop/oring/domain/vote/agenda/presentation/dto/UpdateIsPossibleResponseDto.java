@@ -1,6 +1,6 @@
 package bsm.devcoop.oring.domain.vote.agenda.presentation.dto;
 
-import bsm.devcoop.oring.domain.vote.agenda.Agenda;
+import bsm.devcoop.oring.entity.vote.agenda.Agenda;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

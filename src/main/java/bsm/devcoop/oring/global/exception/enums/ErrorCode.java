@@ -6,17 +6,18 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    // client Error
-    Bad_Request(400, "bad request : "),
+    // Client
+    BAD_REQUEST(400, "BAD REQUEST : "),
 
-    Forbidden(403, "forbidden : "),
+    FORBIDDEN(403, "FORBIDDEN : "),
 
-    Not_Found(404, "not found : "),
+    NOT_FOUND(404, "NOT_FOUND : "),
 
-    Conflict(409, "duplicate : "),
+    CONFLICT(409, "CONFLICT : "),
 
-    // server Error
-    Internal_Server_Error(500, "internal server error");
+
+    // Server Error
+    INTERNAL_SERVER_ERROR(500, "INTERNAL SERVER ERROR");
 
     private final int status;
     private final String message;
