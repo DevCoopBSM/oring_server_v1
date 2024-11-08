@@ -1,16 +1,15 @@
 package bsm.devcoop.oring.entity.occount.transaction.charge;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Entity
 @Table(name = "occount_chargeLog")
 @Data
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargeLog {
     @Id
@@ -44,24 +43,4 @@ public class ChargeLog {
 
     @Column(columnDefinition = "text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
     private String refundRequesterId; // 환불 신청 아이디
-
-    @Builder
-    public ChargeLog(
-            String userCode, LocalDateTime chargeDate,
-            String chargeType, Integer beforePoint, int chargedPoint,
-            int afterPoint, String managedEmail, String paymentId,
-            String refundState, LocalDateTime refundDate, String refundRequesterId
-    ) {
-        this.userCode = userCode;
-        this.chargeDate = chargeDate;
-        this.chargeType = chargeType;
-        this.beforePoint = beforePoint;
-        this.chargedPoint = chargedPoint;
-        this.afterPoint = afterPoint;
-        this.managedEmail = managedEmail;
-        this.paymentId = paymentId;
-        this.refundState = refundState;
-        this.refundDate = refundDate;
-        this.refundRequesterId = refundRequesterId;
-    }
 }

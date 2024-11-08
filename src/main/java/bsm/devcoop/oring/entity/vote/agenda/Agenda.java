@@ -7,17 +7,16 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Entity
-@Table
-@Getter
+@Table(name = "oring_agenda")
+@Data
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Agenda {
   @EmbeddedId
@@ -53,15 +52,6 @@ public class Agenda {
   ) // one agenda -> many vote
   @JsonManagedReference // one 에게 붙는 어노테이션, 순환 루프 방지
   private List<Vote> voteList = new ArrayList<>();
-
-  @Builder
-  public Agenda(AgendaId id, String agendaContent, char isPossible, Conference conference) {
-    this.id = id;
-    this.agendaContent = agendaContent;
-    this.isPossible = isPossible;
-    this.conference = conference; // 맵핑 중 one 으로 연결되는 필드 또한 빌드
-  }
-
 
   // Agenda 엔티티를 ReadAgendaResponseDto로 변환하는 메소드
   public ReadAgendaResponseDto toResponseDto() {

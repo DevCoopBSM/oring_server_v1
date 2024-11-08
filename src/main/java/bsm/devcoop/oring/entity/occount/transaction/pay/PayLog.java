@@ -5,10 +5,11 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Entity
 @Table(name = "occount_payLog")
 @Data
-@Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayLog {
     @Id
@@ -28,22 +29,4 @@ public class PayLog {
     private int afterPoint; // 결제 후 포인트
 
     private String managedEmail; // 담당 매점부 이메일
-
-    // 생성자
-    @Builder
-    public PayLog(
-            Long payId, String userCode, LocalDateTime payDate,
-            String payType, String eventType, int beforePoint,
-            int payedPoint, int afterPoint, String managedEmail
-    ) {
-        this.payId = payId;
-        this.userCode = userCode;
-        this.payDate = payDate;
-        this.payType = payType;
-        this.beforePoint = beforePoint;
-        this.payedPoint = payedPoint;
-        this.afterPoint = afterPoint;
-        this.managedEmail = managedEmail;
-    }
-
 }

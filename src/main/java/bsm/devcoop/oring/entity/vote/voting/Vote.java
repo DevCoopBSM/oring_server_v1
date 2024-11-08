@@ -4,14 +4,13 @@ import bsm.devcoop.oring.entity.vote.agenda.Agenda;
 import bsm.devcoop.oring.entity.account.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Builder
 @Entity
 @Table(name = "oring_vote")
-@Getter
+@Data
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote {
   @EmbeddedId
@@ -41,15 +40,6 @@ public class Vote {
   private User user;
 
   public void setUser(User user) {
-    this.user = user;
-  }
-
-  @Builder
-  public Vote(VoteId voteId, char vote, String reason, Agenda agenda, User user) {
-    this.voteId = voteId;
-    this.vote = vote;
-    this.reason = reason;
-    this.agenda = agenda;
     this.user = user;
   }
 }

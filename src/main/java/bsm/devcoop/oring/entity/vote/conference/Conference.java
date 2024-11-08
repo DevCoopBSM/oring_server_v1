@@ -3,18 +3,17 @@ package bsm.devcoop.oring.entity.vote.conference;
 import bsm.devcoop.oring.entity.vote.agenda.Agenda;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Entity
-@Table
-@Getter
+@Table(name = "oring_conference")
+@Data
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Conference {
   @Id
@@ -34,11 +33,5 @@ public class Conference {
   public void addAgenda(Agenda agenda) {
     agenda.setConference(this);
     agendaList.add(agenda);
-  }
-
-  @Builder
-  public Conference(LocalDate date, String fileLink) {
-    this.date = date;
-    this.fileLink = fileLink;
   }
 }

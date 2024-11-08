@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "common_student")
 @Data
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Student {
     @Id

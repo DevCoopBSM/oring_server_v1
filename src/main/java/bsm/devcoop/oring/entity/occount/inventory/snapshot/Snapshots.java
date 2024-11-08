@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "occount_inventorySnapshots")
 @Data
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Snapshots {
     @Id
