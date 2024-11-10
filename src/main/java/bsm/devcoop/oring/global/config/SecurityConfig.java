@@ -58,11 +58,20 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(
                     auth -> auth
-                            .requestMatchers("/auth/signUp").permitAll()
-                            .requestMatchers("/auth/**").authenticated()
-                            .requestMatchers("/item/**").permitAll()
-                            .requestMatchers("/chat/**").permitAll()
-                            .requestMatchers("/vote/voting").permitAll()
+                            // account
+                            .requestMatchers("/auth/**").permitAll()
+
+                            // occount
+                            .requestMatchers("/transaction/log").authenticated()
+
+                            // vote
+                            .requestMatchers("/conference/**").hasRole("ADMIN")
+
+                            .requestMatchers("/agenda/**").hasRole("ADMIN")
+
+                            .requestMatchers("/vote/voting").hasAnyRole("USER", "MEMBER", "COOP", "ADMIN")
+                            .requestMatchers("/vote/**").hasRole("ADMIN")
+
                             .anyRequest().authenticated()
             )
             .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
@@ -70,8 +79,7 @@ public class SecurityConfig {
 
             .sessionManagement(
                     session -> session.sessionCreationPolicy(
-                            SessionCreationPolicy.STATELESS
-                    ));
+                            SessionCreationPolicy.STATELESS));
 
     log.info("Security filter chain configured");
 

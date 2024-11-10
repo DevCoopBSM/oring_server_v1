@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "common_user")
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
