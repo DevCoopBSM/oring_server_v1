@@ -62,6 +62,8 @@ public class SecurityConfig {
                             .requestMatchers("/auth/**").permitAll()
 
                             // occount
+                            .requestMatchers("/item/**").permitAll()
+
                             .requestMatchers("/transaction/log").authenticated()
 
                             // vote

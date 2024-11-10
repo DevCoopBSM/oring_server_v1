@@ -1,11 +1,11 @@
 package bsm.devcoop.oring.entity.occount.item;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import bsm.devcoop.oring.entity.occount.item.types.EventType;
+import bsm.devcoop.oring.entity.occount.item.types.ItemCategory;
+import jakarta.persistence.*;
 import lombok.*;
 
-// item Entity
+import java.time.LocalDate;
 
 @Builder
 @Entity
@@ -21,9 +21,21 @@ public class Items {
 
     private String itemName; // 상품명
 
+    private String itemImage;
+
     private String itemExplain; // 상품명
 
-    private String itemCategory; // 상품 카테고리
+    @Enumerated(EnumType.STRING)
+    private ItemCategory itemCategory; // 상품 카테고리
 
     private int itemPrice; // 상품 가격
+
+    private int itemQuantity; // 상품 개수
+
+    @Enumerated(EnumType.STRING)
+    private EventType event;
+
+    private LocalDate eventStartDate;
+
+    private LocalDate eventEndDate;
 }
