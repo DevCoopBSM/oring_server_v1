@@ -58,6 +58,9 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(
                     auth -> auth
+                            // ai
+                            .requestMatchers("/ai/**").hasAnyRole("USER", "MEMBER", "COOP", "ADMIN")
+
                             // account
                             .requestMatchers("/auth/**").permitAll()
 
