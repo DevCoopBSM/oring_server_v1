@@ -5,10 +5,11 @@ import lombok.Getter;
 
 import java.util.List;
 
-public class GetDto {
+public class GetItemListDto {
     @Builder
     @Getter
-    public static class Item {
+    public static class Items {
+        private int itemId;
         private String itemImage;
         private String itemName;
         private int itemPrice;
@@ -17,8 +18,8 @@ public class GetDto {
 
     @Builder
     @Getter
-    public static class ItemResponse {
+    public static class ItemsResponse {
         private String itemCategory;
-        private List<Item> itemList;
+        private List<Items> itemList;
     }
 }
