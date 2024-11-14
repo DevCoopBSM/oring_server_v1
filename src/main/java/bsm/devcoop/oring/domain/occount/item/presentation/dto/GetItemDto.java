@@ -23,6 +23,5 @@ public class GetItemDto {
     @Getter
     public static class ItemResponse {
         private Item itemInfo;
-        private String itemRecommendApi;
     }
 }

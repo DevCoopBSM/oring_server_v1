@@ -94,7 +94,6 @@ public class ItemService {
 
         return GetItemDto.ItemResponse.builder()
                 .itemInfo(itemInfo)
-                .itemRecommendApi("/ai/recommend/" + item.getItemCode())
                 .build();
     }
 }
