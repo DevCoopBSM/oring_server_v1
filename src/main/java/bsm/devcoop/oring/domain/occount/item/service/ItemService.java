@@ -21,7 +21,17 @@ import java.util.List;
 public class ItemService {
     private final ItemRepository itemRepository;
 
-    // itemList
+    // itemCode -> item
+    public Items getItemByCode(String itemCode) {
+        return itemRepository.findItemsByItemCode(itemCode);
+    }
+
+    // itemId -> itemCode
+    public int getItemIdByCode(String itemCode) {
+        return itemRepository.findItemIdByItemCode(itemCode);
+    }
+
+    // itemList ( all )
     public GetItemListDto.ItemsResponse getAll() {
         // ALL -> 이름 순일지 새롭게 들어온 신상품 순일지도 정하는 게 좋을 듯
 
@@ -41,6 +51,7 @@ public class ItemService {
         return this.responseList("전체", itemList);
     }
 
+    // itemList ( Category )
     public GetItemListDto.ItemsResponse getAllWithCategory(ItemCategory itemCategory) {
         log.info("카테고리 {} 에 맞춰 List<Items> 를 List<GetDto.Item> 으로 변환하기", itemCategory);
         List<GetItemListDto.Items> itemList = (itemRepository.findAllByItemCategory(itemCategory)).stream()
@@ -58,6 +69,7 @@ public class ItemService {
         return this.responseList(itemCategory.toString(), itemList);
     }
 
+    // itemList Response 생성
     private GetItemListDto.ItemsResponse responseList(String itemCategory, List<GetItemListDto.Items> itemList) {
         log.info("GetDto.ItemResponse 반환 완료");
 
@@ -78,6 +90,7 @@ public class ItemService {
         return this.responseInfo(item);
     }
 
+    // itemInfo Response 생성
     private GetItemDto.ItemResponse responseInfo(Items item) {
         log.info("Items 객체를 GetItemDto.ItemResponse 로 변환 후 반환하기");
 

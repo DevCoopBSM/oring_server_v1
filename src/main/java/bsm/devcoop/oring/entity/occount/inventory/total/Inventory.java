@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Builder
 @Entity
-@Table(name = "common_investment")
+@Table(name = "occount_inventory")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
