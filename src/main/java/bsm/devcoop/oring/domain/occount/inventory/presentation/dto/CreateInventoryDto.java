@@ -1,10 +1,12 @@
 package bsm.devcoop.oring.domain.occount.inventory.presentation.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class CreateInventoryDto {
     @Getter
     public static class NewRequestItem {

@@ -28,7 +28,7 @@ public class ItemService {
 
     // itemId -> itemCode
     public int getItemIdByCode(String itemCode) {
-        return itemRepository.findItemIdByItemCode(itemCode);
+        return (itemRepository.findIdByItemCode(itemCode)).get(0);
     }
 
     // itemList ( all )

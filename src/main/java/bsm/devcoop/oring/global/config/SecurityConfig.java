@@ -67,6 +67,8 @@ public class SecurityConfig {
                             // occount
                             .requestMatchers("/item/**").permitAll()
 
+                            .requestMatchers("/inventory/**").hasAnyRole("COOP", "ADMIN")
+
                             .requestMatchers("/transaction/log").authenticated()
 
                             // vote

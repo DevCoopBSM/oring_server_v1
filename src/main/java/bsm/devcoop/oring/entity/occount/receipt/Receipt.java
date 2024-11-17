@@ -28,5 +28,6 @@ public class Receipt {
 
     private LocalDate saleDate; // 판매 날짜
 
+    @Column(name = "dallyNum")
     private int dailyNum; // 동시 구매된 상품을 묶는 번호. * 컬럼명 변경 필요
 }

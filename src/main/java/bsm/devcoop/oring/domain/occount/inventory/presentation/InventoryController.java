@@ -58,7 +58,7 @@ public class InventoryController {
         return ResponseEntity.ok().body(response);
     }
 
-    // 기존 재고 추가 ( = 스냅샷 생성 )
+    // 기준 재고 추가 ( = 스냅샷 생성 )
     @PostMapping("/snapshot")
     public ResponseEntity<?> createSnapshot(@RequestBody CreateInventoryDto.NewRequest request) {
         log.info("Register new Item in Inventory Started");
@@ -73,7 +73,7 @@ public class InventoryController {
         return ResponseEntity.ok().body(response);
     }
 
-    // 재고 변동 추가
+    // 변동 재고 추가
     @PostMapping("/inventory")
     public ResponseEntity<?> stockChange(@RequestBody CreateInventoryDto.NewRequest request) {
         log.info("Register new Item in Inventory Started");

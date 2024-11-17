@@ -5,9 +5,11 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+@Builder
 @Entity
 @Table(name = "occount_inventorySnapshots")
 @Data
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Snapshots {
     @Id
@@ -20,20 +22,8 @@ public class Snapshots {
 
     private String itemName;
 
+    @Column(name = "quantity")
     private int itemQuantity; // 스냅샷 재고 수량
 
     private String managedEmail;
-
-    @Builder
-    public Snapshots(
-            Long snapshotId, LocalDate snapshotDate, int itemId,
-            String itemName, int itemQuantity, String managedEmail
-    ) {
-        this.snapshotId = snapshotId;
-        this.snapshotDate = snapshotDate;
-        this.itemId = itemId;
-        this.itemName = itemName;
-        this.itemQuantity = itemQuantity;
-        this.managedEmail = managedEmail;
-    }
 }

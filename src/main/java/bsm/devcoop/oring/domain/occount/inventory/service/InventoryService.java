@@ -141,7 +141,7 @@ public class InventoryService {
     }
 
     public Snapshots findSnapshot(int itemId) {
-        return snapshotsRepository.findByItemId(itemId);
+        return (snapshotsRepository.findByItemId(itemId)).get(0);
     }
 
     public List<Inventory> getBetween(LocalDate startDate, LocalDate endDate) {
