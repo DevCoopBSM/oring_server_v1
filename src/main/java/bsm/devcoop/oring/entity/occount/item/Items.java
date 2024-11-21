@@ -38,4 +38,8 @@ public class Items {
     private LocalDate eventStartDate;
 
     private LocalDate eventEndDate;
+
+    public void updateItemQuantity(int itemQuantity) {
+        this.itemQuantity = itemQuantity;
+    }
 }

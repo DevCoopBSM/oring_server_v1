@@ -7,5 +7,6 @@ public enum ItemCategory {
     냉동식품,
     빵류,
     식품,
-    기타,
+    잡화,
+    기타
 }

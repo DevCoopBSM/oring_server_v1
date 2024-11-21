@@ -1,5 +1,6 @@
 package bsm.devcoop.oring.domain.occount.item.presentation.dto;
 
+import bsm.devcoop.oring.entity.occount.item.types.ItemCategory;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,6 +13,7 @@ public class GetItemListDto {
         private int itemId;
         private String itemImage;
         private String itemName;
+        private ItemCategory itemCategory;
         private int itemPrice;
         private int itemQuantity;
     }

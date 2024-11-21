@@ -2,9 +2,13 @@ package bsm.devcoop.oring.domain.occount.item.service;
 
 import bsm.devcoop.oring.domain.occount.item.presentation.dto.GetItemDto;
 import bsm.devcoop.oring.domain.occount.item.presentation.dto.GetItemListDto;
+import bsm.devcoop.oring.entity.occount.inventory.snapshot.repository.SnapshotsRepository;
+import bsm.devcoop.oring.entity.occount.inventory.total.repository.InventoryRepository;
 import bsm.devcoop.oring.entity.occount.item.Items;
 import bsm.devcoop.oring.entity.occount.item.repository.ItemRepository;
 import bsm.devcoop.oring.entity.occount.item.types.ItemCategory;
+import bsm.devcoop.oring.entity.occount.receipt.repository.KioskReceiptRepository;
+import bsm.devcoop.oring.entity.occount.receipt.repository.ReceiptRepository;
 import bsm.devcoop.oring.global.exception.GlobalException;
 import bsm.devcoop.oring.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,6 +25,12 @@ import java.util.List;
 @Slf4j
 public class ItemService {
     private final ItemRepository itemRepository;
+
+    // Repository
+    private final InventoryRepository inventoryRepository;
+    private final SnapshotsRepository snapshotsRepository;
+    private final ReceiptRepository receiptRepository;
+    private final KioskReceiptRepository kioskReceiptRepository;
 
     // itemCode -> item
     public Items getItemByCode(String itemCode) {
@@ -34,14 +45,18 @@ public class ItemService {
     // itemList ( all )
     public GetItemListDto.ItemsResponse getAll() {
         // ALL -> 이름 순일지 새롭게 들어온 신상품 순일지도 정하는 게 좋을 듯
-
         log.info("List<Items> 를 List<GetDto.Item> 으로 변환하기");
         List<GetItemListDto.Items> itemList = (itemRepository.findAll()).stream()
+                .limit(20)
                 .map(items -> {
+                    log.info("상품 개수 새로고침");
+                    this.updateItemQuantity(items, LocalDate.now());
+
                     return GetItemListDto.Items.builder()
                             .itemId(items.getItemId())
                             .itemImage(items.getItemImage())
                             .itemName(items.getItemName())
+                            .itemCategory(items.getItemCategory())
                             .itemPrice(items.getItemPrice())
                             .itemQuantity(items.getItemQuantity())
                             .build();
@@ -54,8 +69,12 @@ public class ItemService {
     // itemList ( Category )
     public GetItemListDto.ItemsResponse getAllWithCategory(ItemCategory itemCategory) {
         log.info("카테고리 {} 에 맞춰 List<Items> 를 List<GetDto.Item> 으로 변환하기", itemCategory);
-        List<GetItemListDto.Items> itemList = (itemRepository.findAllByItemCategory(itemCategory)).stream()
+        List<GetItemListDto.Items> itemList = itemRepository.findAllByItemCategory(itemCategory).stream()
+                .limit(20)
                 .map(items -> {
+                    log.info("상품 개수 새로고침");
+                    this.updateItemQuantity(items, LocalDate.now());
+
                     return GetItemListDto.Items.builder()
                             .itemId(items.getItemId())
                             .itemImage(items.getItemImage())
@@ -68,6 +87,23 @@ public class ItemService {
         log.info("GetDto.ItemResponse 객체 생성 후 반환하기");
         return this.responseList(itemCategory.toString(), itemList);
     }
+
+    /*
+    public GetItemListDto.ItemsResponse getAllWithCategory(List<GetItemListDto.Items> itemList, ItemCategory filter) {
+        log.info("카테고리 {} 에 맞춰 List<GetDto.Item> 를 필터링하기", filter);
+
+        if (filter == ItemCategory.기타) filter = ItemCategory.잡화;
+
+        ItemCategory itemCategory = filter;
+
+        List<GetItemListDto.Items> filteredItemList = itemList.stream()
+                .filter(items -> items.getItemCategory() == itemCategory)
+                .toList();
+
+        log.info("GetDto.ItemResponse 객체 생성 후 반환하기");
+        return this.responseList(itemCategory.toString(), itemList);
+    }
+    */
 
     // itemList Response 생성
     private GetItemListDto.ItemsResponse responseList(String itemCategory, List<GetItemListDto.Items> itemList) {
@@ -108,5 +144,24 @@ public class ItemService {
         return GetItemDto.ItemResponse.builder()
                 .itemInfo(itemInfo)
                 .build();
+    }
+
+    // itemQuantity 구하기
+    private void updateItemQuantity(Items item, LocalDate itemQtyDate) {
+        log.info("상품 재고 개수 호출");
+
+        int itemId = item.getItemId();
+        String itemCode = item.getItemCode();
+
+        log.info("상품 아이디 : {} 상품 바코드 : {}", itemId, itemCode);
+
+        int inventoryQty = inventoryRepository.findSumQuantity(itemId, itemQtyDate);
+        int snapshotQty = snapshotsRepository.findSumQuantity(itemId, itemQtyDate);
+        int receiptQty = receiptRepository.findSumQuantity(itemId, itemQtyDate);
+        int kioskQty = kioskReceiptRepository.findSumQuantity(itemCode, itemQtyDate);
+
+        int itemQuantity = (inventoryQty + snapshotQty) - (receiptQty + kioskQty);
+
+        item.updateItemQuantity(itemQuantity);
     }
 }
