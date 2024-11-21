@@ -60,7 +60,11 @@ public class AIController {
                 .build();
 
         try {
-            AIDto.WarningAIResponse response = aiService.callWarningApi(request);
+            AIDto.WarningAIResponse aiResponse = aiService.callWarningApi(request);
+
+            AIDto.WarningResponse response = AIDto.WarningResponse.builder()
+                    .itemName(aiResponse.getItem_name())
+                    .build();
 
             log.info("실시간 재고 경고 완료");
             return ResponseEntity.ok().body(response);
