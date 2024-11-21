@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 public class AIDto {
+    @Builder
     @Getter
     public static class Request {
         private String userCode;
@@ -16,7 +17,7 @@ public class AIDto {
 
     @Getter
     public static class RecommendAIResponse {
-        private List<String> itemNameList;
+        private List<String> item_name;
     }
 
     @Builder
@@ -40,6 +41,12 @@ public class AIDto {
 
     @Getter
     public static class WarningAIResponse {
+        private String item_name;
+    }
+
+    @Builder
+    @Getter
+    public static class WarningResponse {
         private String itemName;
     }
 
