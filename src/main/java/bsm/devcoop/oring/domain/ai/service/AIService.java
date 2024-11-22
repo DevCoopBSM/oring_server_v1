@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,6 +99,13 @@ public class AIService {
         String url = aiApiUrl + "/peak_time/";
         log.info("URL : {}", url);
 
-        return restTemplate.build().getForEntity(url, AIDto.PeakTimeAIResponse.class).getBody();
+        HttpHeaders headers = new HttpHeaders();
+        MediaType mediaType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
+        headers.setContentType(mediaType);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<AIDto.PeakTimeAIResponse> responseEntity = restTemplate.build().exchange(url, HttpMethod.GET, entity, AIDto.PeakTimeAIResponse.class);
+
+        return responseEntity.getBody();
     }
 }
