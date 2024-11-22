@@ -24,32 +24,12 @@ public class ReceiptService {
     private final ItemService itemService;
 
     @Transactional(readOnly = true)
-    public List<Receipt> getAll(LocalDate startDate, LocalDate endDate) {
-        return receiptRepository.findBySaleDateBetween(startDate, endDate);
-    }
-
-    @Transactional(readOnly = true)
     public int getReceiptsSoldQty(int itemId, LocalDate today) {
         return receiptRepository.findAllByItemIdAndSaleDate(itemId, today).stream()
                 .mapToInt(Receipt::getSaleQty)
                 .sum();
     }
 
-    @Transactional(readOnly = true)
-    public List<ReceiptDto.SumReceipt> combineReceipts(List<Receipt> receiptList, List<KioskReceipt> kioskReceiptList) {
-        Map<Integer, ReceiptDto.SumReceipt> combine = new HashMap<>();
-
-        for (Receipt receipt : receiptList) {
-            addOrUpdateSumReceipt(combine, receipt.getItemId(), receipt.getItemName(), receipt.getSaleQty(), receipt.getSaleDate());
-        }
-
-        for (KioskReceipt kioskReceipt : kioskReceiptList) {
-            int itemId = itemService.getItemIdByCode(kioskReceipt.getItemCode());
-            addOrUpdateSumReceipt(combine, itemId, kioskReceipt.getItemName(), kioskReceipt.getSaleQty(), kioskReceipt.getSaleDate());
-        }
-
-        return new ArrayList<>(combine.values());
-    }
     private void addOrUpdateSumReceipt(
             Map<Integer, ReceiptDto.SumReceipt> combine,
             int itemId, String itemName, int saleQty, LocalDate saleDate

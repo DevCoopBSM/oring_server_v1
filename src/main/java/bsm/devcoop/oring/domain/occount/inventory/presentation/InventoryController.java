@@ -22,42 +22,6 @@ import java.util.List;
 public class InventoryController {
     private final InventoryService inventoryService;
 
-    // 특정 날짜 사이의 인벤토리 읽기
-    @GetMapping("/")
-    public ResponseEntity<?> inventoryCheck(
-            @RequestParam("startDate") LocalDate startDate,
-            @RequestParam("endDate") LocalDate endDate
-    ) {
-        log.info("Get Inventories between {} ~ {}", startDate, endDate);
-
-        List<Inventory> inventoryList = inventoryService.getBetween(startDate, endDate);
-
-        ReadInventoryDto.AllResponse response = ReadInventoryDto.AllResponse.builder()
-                .inventoryList(inventoryList)
-                .build();
-
-        log.info("Get Inventories Success");
-        return ResponseEntity.ok().body(response);
-    }
-
-    // 해당 날짜의 재고 변동 사항 조회
-    @GetMapping("/byday/{stdDate}")
-    public ResponseEntity<?> inventoryByDay(@PathVariable LocalDate stdDate) {
-        log.info("Get Inventory changes At : {}", stdDate);
-
-        // 해당 날짜의 재고 스냅샷 전부 조회
-        log.info("Get All Snapshots At Date");
-        List<Snapshots> snapshotsList = inventoryService.getAllSnapshotsBy(stdDate);
-
-        List<ReadInventoryDto.ByDay> snapshotList = inventoryService.getAllClosestSnapshots(snapshotsList);
-
-        ReadInventoryDto.ByDayResponse response = ReadInventoryDto.ByDayResponse.builder()
-                .snapshotList(snapshotList)
-                .build();
-
-        return ResponseEntity.ok().body(response);
-    }
-
     // 기준 재고 추가 ( = 스냅샷 생성 )
     @PostMapping("/snapshot")
     public ResponseEntity<?> createSnapshot(@RequestBody CreateInventoryDto.NewRequest request) {

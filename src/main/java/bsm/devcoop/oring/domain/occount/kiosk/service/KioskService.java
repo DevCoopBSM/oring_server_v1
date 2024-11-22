@@ -13,10 +13,4 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class KioskService {
-    private final KioskReceiptRepository kioskReceiptRepository;
-
-    @Transactional
-    public List<KioskReceipt> getAll(LocalDate startDate, LocalDate endDate) {
-        return kioskReceiptRepository.findBySaleDateBetween(startDate, endDate);
-    }
 }
