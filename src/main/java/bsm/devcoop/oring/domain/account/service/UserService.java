@@ -1,5 +1,6 @@
 package bsm.devcoop.oring.domain.account.service;
 
+import bsm.devcoop.oring.entity.account.user.User;
 import bsm.devcoop.oring.entity.account.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public String getUserCodeByEmail(String userEmail) {
-        return userRepository.findUserCodeByUserEmail(userEmail);
+        User user = userRepository.findByUserEmail(userEmail);
+        return user.getUserCode();
     }
 }
