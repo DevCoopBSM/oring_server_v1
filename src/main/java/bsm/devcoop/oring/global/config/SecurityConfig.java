@@ -71,6 +71,10 @@ public class SecurityConfig {
 
                             .requestMatchers("/transaction/log").authenticated()
 
+                            // chat
+                            .requestMatchers("/wsChat/**").permitAll() // ChannelFilter
+                            .requestMatchers("/chat/**").authenticated()
+
                             // vote
                             .requestMatchers("/conference/**").hasRole("ADMIN")
 
