@@ -43,7 +43,7 @@ public class ChatService {
                     return ChatDto.All.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
                             .chatRoomName(chatRoom.getChatRoomName())
-                            .createUserNumber(chatRoom.getCreateUserNumber())
+                            .createUserName(chatRoom.getCreateUserName())
                             .chatRoomName(chatRoom.getChatRoomName())
                             .createdAt(chatRoom.getCreatedAt())
                             .build();

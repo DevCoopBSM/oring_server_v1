@@ -13,7 +13,7 @@ public class ChatDto {
     public static class All {
         private String chatRoomId;
         private String chatRoomName;
-        private String createUserNumber;
+        private String createUserName;
         private LocalDate createdAt;
     }
 
