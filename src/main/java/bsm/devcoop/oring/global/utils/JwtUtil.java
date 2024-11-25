@@ -47,22 +47,6 @@ public class JwtUtil {
         return token;
     }
 
-    // Vote 인증용 발급하는 Authorization JWT
-    public String createVoteAuthorizationJwt(String userName) {
-        log.info("Create JWT Started with secretKey : {}", secretKey);
-
-        Claims claims = Jwts.claims();
-        claims.put("userName", userName);
-        Date now = new Date();
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + exprTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-    }
-
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
 

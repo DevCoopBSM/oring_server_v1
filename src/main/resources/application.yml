@@ -28,3 +28,6 @@ jwt:
 
 ai:
   api: ${AI_URL}
+
+emitter:
+  expiration: 3600000 # 30 minutes in milliseconds
