@@ -34,7 +34,7 @@ public class ChatService {
     public ChatDto.AllResponse getMyAll(String userEmail) {
         User user = userService.getUserByEmail(userEmail);
 
-        return this.createAllResponse(chatRoomRepository.findAllByCreateUserNumber(user.getUserNumber()));
+        return this.createAllResponse(chatRoomRepository.findAllByCreateUserEmail(user.getUserEmail()));
     }
 
     private ChatDto.AllResponse createAllResponse(List<ChatRoom> chatRoomList) {
@@ -68,7 +68,7 @@ public class ChatService {
         ChatRoom chatRoom = ChatRoom.builder()
                 .chatRoomId(UUID.randomUUID().toString())
                 .chatRoomName(message)
-                .createUserNumber(user.getUserNumber())
+                .createUserEmail(user.getUserEmail())
                 .createUserName(student.getStuNumber() + " " + student.getStuName())
                 .createdAt(LocalDate.now())
                 .build();

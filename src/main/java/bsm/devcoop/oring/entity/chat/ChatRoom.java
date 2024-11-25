@@ -12,7 +12,9 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -27,7 +29,7 @@ public class ChatRoom {
 
     private String chatRoomName; // 첫 메시지 내용
 
-    private String createUserNumber;
+    private String createUserEmail;
 
     private String createUserName; // 채팅방 생성 유저 ( 사용자 학번 + " " + 사용자 이름 )
 
@@ -35,13 +37,13 @@ public class ChatRoom {
 
     @Builder.Default
     @JdbcTypeCode((SqlTypes.JSON))
-    private Set<ChatMessage> messageSet = new HashSet<>();
+    private List<ChatMessage> messageList = new ArrayList<>();
 
     public void initChatRoomName(String message) {
         this.chatRoomName = message;
     }
 
     public void addMessage(ChatMessage chatMessage) {
-        this.messageSet.add(chatMessage);
+        this.messageList.add(chatMessage);
     }
 }

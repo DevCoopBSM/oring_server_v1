@@ -63,7 +63,7 @@ public class ChatPublisher {
 
         try {
             ChatRoom chatRoom = chatService.getRoomInfo(chatRoomId);
-            String createUserEmail = userService.getUserEmailById(chatRoom.getCreateUserNumber());
+            String createUserEmail = chatRoom.getCreateUserEmail();
 
             if (!userEmail.equals(createUserEmail)) {
                 log.info("메시지 전송 알림 호출");
