@@ -73,7 +73,10 @@ public class SecurityConfig {
 
                             // chat
                             .requestMatchers("/wsChat/**").permitAll() // ChannelFilter
-                            .requestMatchers("/chat/**").authenticated()
+
+                            .requestMatchers("/chat/myRooms").hasAnyRole("USER", "MEMBER")
+                            .requestMatchers("/chat/info/**").hasAnyRole("USER", "MEMBER", "COOP", "ADMIN")
+                            .requestMatchers("/chat/").hasAnyRole("COOP", "ADMIN")
 
                             // vote
                             .requestMatchers("/conference/**").hasRole("ADMIN")
@@ -82,6 +85,9 @@ public class SecurityConfig {
 
                             .requestMatchers("/vote/voting").hasAnyRole("USER", "MEMBER", "COOP", "ADMIN")
                             .requestMatchers("/vote/**").hasRole("ADMIN")
+
+                            // notify
+                            .requestMatchers("/notify/connect").authenticated()
 
                             .anyRequest().authenticated()
             )

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "chat", produces = "application/json; charset=utf8")
+@RequestMapping(value = "/chat", produces = "application/json; charset=utf8")
 @RequiredArgsConstructor
 @Slf4j
 public class ChatController {
@@ -40,7 +40,7 @@ public class ChatController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{chatRoomId}")
+    @GetMapping("/info/{chatRoomId}")
     public ResponseEntity<?> getChatRoomInfo(@PathVariable String chatRoomId) {
         log.info("특정 채팅방의 내역 불러오기 : {}", chatRoomId);
 

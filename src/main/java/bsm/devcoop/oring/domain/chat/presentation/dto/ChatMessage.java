@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class ChatMessage {
     private String chatRoomId;
-    private String createUserName;
+    private String userName;
     private MessageType messageType;
     private String message;
 
@@ -14,3 +14,4 @@ public class ChatMessage {
         this.chatRoomId = chatRoomId;
     }
 }
+

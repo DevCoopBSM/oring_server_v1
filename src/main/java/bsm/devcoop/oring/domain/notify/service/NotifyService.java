@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
 @Service
@@ -50,8 +51,8 @@ public class NotifyService {
         return emitter;
     }
 
-    public void send(String notifyContent, NotifyType notifyType, String notifyUrl, String receiveUserEmail) {
-        Notify notify = notificationRepository.save(this.create(notifyContent, notifyType, notifyUrl, receiveUserEmail));
+    public void send(String notifyTitle, String notifyContent, NotifyType notifyType, String notifyUrl, String receiveUserEmail) {
+        Notify notify = notificationRepository.save(this.create(notifyTitle, notifyContent, notifyType, notifyUrl, receiveUserEmail));
 
         Map<String, SseEmitter> emitterMap = emitterRepository.findAllEmitterByUserEmail(receiveUserEmail);
         emitterMap.forEach(
@@ -62,8 +63,9 @@ public class NotifyService {
         );
     }
 
-    private Notify create(String notifyContent, NotifyType notifyType, String notifyUrl, String receiveUserEmail) {
+    private Notify create(String notifyTitle, String notifyContent, NotifyType notifyType, String notifyUrl, String receiveUserEmail) {
         return Notify.builder()
+                .notifyTitle(notifyTitle)
                 .notifyContent(notifyContent)
                 .notifyType(notifyType)
                 .notifyUrl(notifyUrl)
@@ -85,4 +87,44 @@ public class NotifyService {
 
 
     // Custom Notify
+
+    public void sendAIWarningNotify(int itemId, String itemName, String receiveUserEmail) {
+        log.info("AI 재고 소진 알림");
+
+        String notifyTitle = itemName + " 이/가 품절 직전이에요!";
+        String notifyContent = "다 팔리기 전에 얼른 가서 사는 건 어때요?";
+        String notifyUrl = "/api/item/info/" + itemId;
+
+        this.send(notifyTitle, notifyContent, NotifyType.CHAT_ANSWER, notifyUrl, receiveUserEmail);
+    }
+
+    public void sendInventoryNewNotify(int itemId, String receiveUserEmail) {
+        log.info("즐겨찾는 상품 재입고 알림");
+
+        String notifyTitle = "찜해 둔 상품이 재입고 되었어요.";
+        String notifyContent = "상품을 한 번 둘러보고 오늘 간식을 결정해 보아요.";
+        String notifyUrl = "/api/chat/info/" + itemId;
+
+        this.send(notifyTitle, notifyContent, NotifyType.CHAT_ANSWER, notifyUrl, receiveUserEmail);
+    }
+
+    public void sendChatAnswerNotify(String chatRoomId, String receiveUserEmail) {
+        log.info("문의 채팅 수신 알림");
+
+        String notifyTitle = "매점의 소리에 새로운 답변이 달렸어요.";
+        String notifyContent = "매점부 친구의 답변을 확인해 볼까요?";
+        String notifyUrl = "/api/chat/" + chatRoomId;
+
+        this.send(notifyTitle, notifyContent, NotifyType.CHAT_ANSWER, notifyUrl, receiveUserEmail);
+    }
+
+    public void sendVoteNewNotify(String chatRoomId, String receiveUserEmail) {
+        log.info("새 총회 개설 알림");
+
+        String notifyTitle = "총회가 시작되었어요!";
+        String notifyContent = "새롭게 코드를 발급받고 참여해 볼까요?";
+        String notifyUrl = "";
+
+        this.send(notifyTitle, notifyContent, NotifyType.CHAT_ANSWER, notifyUrl, receiveUserEmail);
+    }
 }

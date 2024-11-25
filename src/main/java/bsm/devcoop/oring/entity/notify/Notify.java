@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Builder
 @Entity
-@Table(name = "oring_notification")
+@Table(name = "oring_notify")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +17,8 @@ public class Notify {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int notifyId;
+
+    private String notifyTitle;
 
     private String notifyContent;
 
