@@ -49,6 +49,7 @@ public class InventoryService {
 
                     // Client 딴에서 상품 바코드나 상품명 입력 시 나머지 둘 다 보정되게끔 하는 API 설정 필요!!
                     int itemId = itemService.getItemIdByCode(itemCode);
+                    int receiptSoldQty;
 
                     if (itemId == 0) {
                         CreateDto.Request itemSaveReq = CreateDto.Request.builder()
@@ -56,9 +57,11 @@ public class InventoryService {
                                 .itemName(item.getItemName())
                                 .build();
                         itemService.saveItem(itemSaveReq);
-                    }
 
-                    int receiptSoldQty = receiptService.getReceiptsSoldQty(itemId, LocalDate.now());
+                        receiptSoldQty = 0;
+                    } else {
+                        receiptSoldQty = receiptService.getReceiptsSoldQty(itemId, LocalDate.now());
+                    }
 
                     log.info("스냅샷 ( if + 인벤토리 ) 생성");
                     if (receiptSoldQty == 0) {
