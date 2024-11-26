@@ -13,10 +13,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Items, Integer> {
     Items findByItemName(String itemName);
 
-    Items findItemsByItemCode(String itemCode);
+    Items findByItemCode(String itemCode);
 
     List<Items> findAllByItemCategory(ItemCategory itemCategory);
-
-    @Query("SELECT i.itemId FROM Items i WHERE i.itemCode = :itemCode")
-    List<Integer> findIdByItemCode(@Param("itemCode") String itemCode);
 }

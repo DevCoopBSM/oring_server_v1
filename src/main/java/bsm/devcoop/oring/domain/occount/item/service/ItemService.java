@@ -1,5 +1,6 @@
 package bsm.devcoop.oring.domain.occount.item.service;
 
+import bsm.devcoop.oring.domain.occount.item.presentation.dto.CreateDto;
 import bsm.devcoop.oring.domain.occount.item.presentation.dto.GetItemDto;
 import bsm.devcoop.oring.domain.occount.item.presentation.dto.GetItemListDto;
 import bsm.devcoop.oring.entity.occount.inventory.snapshot.repository.SnapshotsRepository;
@@ -34,12 +35,27 @@ public class ItemService {
 
     // itemCode -> item
     public Items getItemByCode(String itemCode) {
-        return itemRepository.findItemsByItemCode(itemCode);
+        return itemRepository.findByItemCode(itemCode);
     }
 
     // itemId -> itemCode
     public int getItemIdByCode(String itemCode) {
-        return (itemRepository.findIdByItemCode(itemCode)).get(0);
+        Items items = this.getItemByCode(itemCode);
+
+        return items == null? 0 : items.getItemId();
+    }
+
+    // item Save
+    public void saveItem(CreateDto.Request request) {
+        Items items = Items.builder()
+                .itemCode(request.getItemCode())
+                .itemName(request.getItemName())
+                .itemImage(request.getItemImage())
+                .itemExplain(request.getItemExplain())
+                .itemPrice(request.getItemPrice())
+                .itemCategory(request.getItemCategory())
+                .build();
+        itemRepository.save(items);
     }
 
     // itemList ( all )

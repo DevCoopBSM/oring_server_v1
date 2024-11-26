@@ -1,6 +1,7 @@
 package bsm.devcoop.oring.domain.occount.inventory.service;
 
 import bsm.devcoop.oring.domain.occount.inventory.presentation.dto.CreateInventoryDto;
+import bsm.devcoop.oring.domain.occount.item.presentation.dto.CreateDto;
 import bsm.devcoop.oring.domain.occount.item.service.ItemService;
 import bsm.devcoop.oring.domain.occount.receipt.service.ReceiptService;
 import bsm.devcoop.oring.entity.occount.inventory.snapshot.Snapshots;
@@ -48,6 +49,15 @@ public class InventoryService {
 
                     // Client 딴에서 상품 바코드나 상품명 입력 시 나머지 둘 다 보정되게끔 하는 API 설정 필요!!
                     int itemId = itemService.getItemIdByCode(itemCode);
+
+                    if (itemId == 0) {
+                        CreateDto.Request itemSaveReq = CreateDto.Request.builder()
+                                .itemCode(itemCode)
+                                .itemName(item.getItemName())
+                                .build();
+                        itemService.saveItem(itemSaveReq);
+                    }
+
                     int receiptSoldQty = receiptService.getReceiptsSoldQty(itemId, LocalDate.now());
 
                     log.info("스냅샷 ( if + 인벤토리 ) 생성");
