@@ -142,6 +142,20 @@ public class ItemService {
         return this.responseInfo(item);
     }
 
+    public GetItemDto.ByCodeResponse getItemInfoByCode(String itemCode) throws GlobalException {
+        log.info("상세 정보 불러올 상품 : {}", itemCode);
+
+        Items items = itemRepository.findByItemCode(itemCode);
+        String itemName = items.getItemName();
+
+        return GetItemDto.ByCodeResponse.builder()
+                .itemNameCompany(itemName.split("_")[0])
+                .itemName(itemName.split("_")[1])
+                .itemNameEtc(itemName.split("_")[2])
+                .itemCode(items.getItemCode())
+                .build();
+    }
+
     // itemInfo Response 생성
     private GetItemDto.ItemResponse responseInfo(Items item) {
         log.info("Items 객체를 GetItemDto.ItemResponse 로 변환 후 반환하기");
@@ -171,8 +185,8 @@ public class ItemService {
 
         log.info("상품 아이디 : {} 상품 바코드 : {}", itemId, itemCode);
 
-        int inventoryQty = inventoryRepository.findSumQuantity(itemId, itemQtyDate);
         int snapshotQty = snapshotsRepository.findSumQuantity(itemId, itemQtyDate);
+        int inventoryQty = inventoryRepository.findSumQuantity(itemId, itemQtyDate);
         int receiptQty = receiptRepository.findSumQuantity(itemId, itemQtyDate);
         int kioskQty = kioskReceiptRepository.findSumQuantity(itemCode, itemQtyDate);
 

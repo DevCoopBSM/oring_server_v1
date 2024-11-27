@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatPublisher {
     private final ChatService chatService;
     private final NotifyService notifyService;
-    private final UserService userService;
 
     private final JwtUtil jwtUtil;
 

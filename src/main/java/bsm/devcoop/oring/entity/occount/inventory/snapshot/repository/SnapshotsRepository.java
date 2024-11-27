@@ -14,6 +14,6 @@ public interface SnapshotsRepository extends JpaRepository<Snapshots, Long> {
     @Query(value = "SELECT s FROM Snapshots s WHERE s.itemId = :itemId ORDER BY s.snapshotDate ASC")
     List<Snapshots> findByItemId(@Param("itemId") int itemId);
 
-    @Query("SELECT COALESCE(SUM(s.itemQuantity), 0) FROM Snapshots AS s WHERE s.itemId = :itemId and s.snapshotDate > :snapshotDate")
+    @Query("SELECT s.itemQuantity FROM Snapshots AS s WHERE s.itemId = :itemId and s.snapshotDate > :snapshotDate ORDER BY s.snapshotDate LIMIT 1")
     int findSumQuantity(@Param("itemId") int itemId, @Param("snapshotDate") LocalDate snapshotDate);
 }

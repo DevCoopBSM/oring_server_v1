@@ -24,4 +24,13 @@ public class GetItemDto {
     public static class ItemResponse {
         private Item itemInfo;
     }
+
+    @Builder
+    @Getter
+    public static class ByCodeResponse {
+        private String itemNameCompany;
+        private String itemName;
+        private String itemNameEtc;
+        private String itemCode;
+    }
 }

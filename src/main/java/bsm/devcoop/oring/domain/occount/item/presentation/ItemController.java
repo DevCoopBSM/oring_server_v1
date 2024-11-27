@@ -50,4 +50,17 @@ public class ItemController {
             return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
         }
     }
+
+    @GetMapping("/barcode/{itemCode}")
+    public ResponseEntity<?> getItemByCode(@PathVariable String itemCode) {
+        log.info("바코드로 특정 아이템 불러오기");
+
+        try {
+            GetItemDto.ByCodeResponse response = itemService.getItemInfoByCode(itemCode);
+
+            return ResponseEntity.ok().body(response);
+        } catch (GlobalException e) {
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+        }
+    }
 }
