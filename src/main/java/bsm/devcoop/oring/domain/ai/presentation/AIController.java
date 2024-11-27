@@ -20,7 +20,7 @@ public class AIController {
 
     private final UserService userService;
 
-    @PostMapping("/recommend")
+    @GetMapping("/recommend")
     public ResponseEntity<?> recommendItemList() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userEmail = userDetails.getUserEmail();
@@ -46,7 +46,7 @@ public class AIController {
         }
     }
 
-    @PostMapping("/warning")
+    @GetMapping("/warning")
     public ResponseEntity<?> warningItem() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userEmail = userDetails.getUserEmail();
