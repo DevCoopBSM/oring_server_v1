@@ -16,5 +16,9 @@ public class ChatMessage {
     public void initChatRoomId(String chatRoomId) {
         this.chatRoomId = chatRoomId;
     }
+
+    public void initMessageTime() {
+        this.messageTime = LocalDateTime.now();
+    }
 }
 

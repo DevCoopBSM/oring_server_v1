@@ -50,6 +50,9 @@ public class ChatPublisher {
             chatMessage.initChatRoomId(chatService.createRoom(userEmail, chatMessage.getMessage()));
         }
 
+        log.info("메시지 발행 시간 저장");
+        chatMessage.initMessageTime();
+
         try {
             chatService.saveChatMessage(chatMessage);
         } catch (GlobalException e) {
