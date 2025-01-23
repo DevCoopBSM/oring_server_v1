@@ -3,7 +3,7 @@ package bsm.devcoop.oring.domain.notify.service;
 import bsm.devcoop.oring.domain.notify.presentation.dto.NotifyDto;
 import bsm.devcoop.oring.domain.notify.repository.EmitterRepository;
 import bsm.devcoop.oring.entity.notify.Notify;
-import bsm.devcoop.oring.entity.notify.repository.NotificationRepository;
+import bsm.devcoop.oring.entity.notify.repository.NotifyRepository;
 import bsm.devcoop.oring.entity.notify.types.NotifyType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Map;
 
 @Service
@@ -22,7 +21,7 @@ import java.util.Map;
 @Slf4j
 public class NotifyService {
     private final EmitterRepository emitterRepository;
-    private final NotificationRepository notificationRepository;
+    private final NotifyRepository notifyRepository;
 
     @Value("${emitter.expiration}")
     private long exprTime;
@@ -52,13 +51,15 @@ public class NotifyService {
     }
 
     public void send(String notifyTitle, String notifyContent, NotifyType notifyType, String notifyUrl, String receiveUserEmail) {
-        Notify notify = notificationRepository.save(this.create(notifyTitle, notifyContent, notifyType, notifyUrl, receiveUserEmail));
+        Notify notify = notifyRepository.save(this.create(notifyTitle, notifyContent, notifyType, notifyUrl, receiveUserEmail));
 
         Map<String, SseEmitter> emitterMap = emitterRepository.findAllEmitterByUserEmail(receiveUserEmail);
         emitterMap.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notify);
-                    sendToClient(emitter, key, NotifyDto.NewResponse.builder().notify(notify).build());
+                    sendToClient(emitter, key, NotifyDto.NewResponse.builder()
+                            .notify(notify)
+                            .build());
                 }
         );
     }

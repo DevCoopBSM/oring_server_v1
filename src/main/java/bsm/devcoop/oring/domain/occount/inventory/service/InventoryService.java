@@ -143,7 +143,7 @@ public class InventoryService {
         Inventory inventory = Inventory.builder()
                 .itemId(itemId)
                 .itemName(item.getItemName())
-                .itemQuantity(receiptSoldQty)
+                .itemQuantity(item.getItemQuantity())
                 .lastUpdated(LocalDate.now())
                 .managedEmail(managedEmail)
                 .reason("auto : 스냅샷 생성 이전 당일 판매량 보정")

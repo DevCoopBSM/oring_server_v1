@@ -1,11 +1,8 @@
 package bsm.devcoop.oring.domain.chat.presentation;
 
-import bsm.devcoop.oring.domain.account.service.UserService;
 import bsm.devcoop.oring.domain.chat.presentation.dto.ChatMessage;
 import bsm.devcoop.oring.domain.chat.service.ChatService;
 import bsm.devcoop.oring.domain.notify.service.NotifyService;
-import bsm.devcoop.oring.entity.account.user.CustomUserDetails;
-import bsm.devcoop.oring.entity.account.user.User;
 import bsm.devcoop.oring.entity.chat.ChatRoom;
 import bsm.devcoop.oring.entity.chat.types.MessageType;
 import bsm.devcoop.oring.global.exception.GlobalException;
@@ -15,10 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
